@@ -1,0 +1,3884 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blank Trainer</title>
+  <style>
+    :root {
+      --bg: #f6f6f4;
+      --panel: #ffffff;
+      --panel-soft: #fbfbfa;
+      --text: #121316;
+      --muted: #676a70;
+      --line: #dbdcdf;
+      --line-strong: #a5a7ad;
+      --accent: #9b9da4;
+      --accent-soft: #eeeeef;
+      --accent-pale: #f5f5f6;
+      --dream-gray: #d7d8dd;
+      --danger: #202124;
+      --danger-soft: #efeff0;
+      --ok: #fefefe;
+      --ok-soft: #fafafa;
+      --warn: #86888e;
+      --warn-soft: #e7e8ea;
+      --black: #08090b;
+      --shadow: 0 16px 40px rgba(18, 19, 22, 0.08);
+      --radius-xl: 22px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 9px;
+      --focus: 0 0 0 3px rgba(145, 147, 153, 0.24);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100%;
+      color: var(--text);
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      background:
+        radial-gradient(circle at 8% -8%, rgba(205, 206, 211, 0.24), transparent 32rem),
+        radial-gradient(circle at 92% 4%, rgba(198, 200, 205, 0.20), transparent 30rem),
+        radial-gradient(circle at 50% 112%, rgba(220, 220, 223, 0.22), transparent 34rem),
+        linear-gradient(180deg, #fbfaf9 0%, var(--bg) 46%, #f1f0ee 100%);
+      line-height: 1.6;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .app {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 34px 0 64px;
+    }
+
+    .hero {
+      padding: 28px;
+      margin-bottom: 18px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(216, 218, 221, 0.82);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4.5vw, 3.25rem);
+      line-height: 1;
+      letter-spacing: -0.055em;
+      font-weight: 780;
+    }
+
+    .subtitle {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .storage-state {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      color: #3f4650;
+      background: var(--accent-soft);
+      border: 1px solid #d5dbe2;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(150, 151, 156, 0.13);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .side,
+    .main {
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(216, 218, 221, 0.94);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 10px 28px rgba(31, 35, 40, 0.055);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .panel-title h2 {
+      margin: 0;
+      font-size: 1.03rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field.two {
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    label,
+    .field-label {
+      color: #3e444d;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 11px;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: var(--focus);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hero-actions {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .random-main {
+      position: relative;
+      isolation: isolate;
+      width: 100%;
+      min-height: 70px;
+      padding: 16px 18px;
+      overflow: hidden;
+      border-radius: 20px;
+      font-size: 1.32rem;
+      letter-spacing: 0.045em;
+      box-shadow:
+        0 18px 34px rgba(15, 17, 20, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      transform-origin: center;
+      animation:
+        randomPuni 4.8s ease-in-out infinite,
+        randomGloss 5.8s ease-in-out infinite,
+        randomGlow 4.8s ease-in-out infinite;
+    }
+
+    .random-main::before,
+    .random-main::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .random-main::before {
+      inset: -60%;
+      background:
+        radial-gradient(circle at 18% 28%, rgba(255, 255, 255, 0.34) 0 2px, transparent 3px),
+        radial-gradient(circle at 72% 24%, rgba(255, 255, 255, 0.24) 0 2px, transparent 3px),
+        radial-gradient(circle at 62% 76%, rgba(255, 255, 255, 0.20) 0 2px, transparent 3px);
+      opacity: 0;
+      animation: randomSparkle 4.8s ease-in-out infinite;
+    }
+
+    .random-main::after {
+      top: -34%;
+      left: -42%;
+      width: 42%;
+      height: 170%;
+      background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.24) 46%, transparent 100%);
+      transform: rotate(10deg);
+      animation: randomSweep 5.4s ease-in-out infinite;
+    }
+
+    .sub-action-row {
+      display: grid;
+      grid-template-columns: 0.72fr 1fr;
+      gap: 10px;
+    }
+
+    .clear-quiet {
+      color: var(--black);
+      background: #fff;
+      border-color: var(--black);
+      font-weight: 800;
+      opacity: 0.78;
+    }
+
+    .clear-quiet:hover {
+      color: #fff;
+      background: var(--black);
+      opacity: 1;
+    }
+
+    .pick-one {
+      position: relative;
+      overflow: hidden;
+      font-weight: 850;
+    }
+
+    .pick-one::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 24% 12%, rgba(255, 255, 255, 0.62), transparent 34%);
+      opacity: 0;
+      transition: opacity 0.18s ease;
+      pointer-events: none;
+    }
+
+    .pick-one:hover::after {
+      opacity: 1;
+    }
+
+    @keyframes randomPuni {
+      0%, 68%, 100% { transform: translateY(0) scale(1); }
+      73% { transform: translateY(2px) scale(0.972, 1.032); }
+      78% { transform: translateY(-4px) scale(1.034, 0.975); }
+      83% { transform: translateY(1px) scale(0.99, 1.016); }
+      88% { transform: translateY(0) scale(1.006, 0.998); }
+    }
+
+    @keyframes randomGloss {
+      0%, 64%, 100% { filter: brightness(1); }
+      77% { filter: brightness(1.12); }
+      86% { filter: brightness(1.04); }
+    }
+
+    @keyframes randomGlow {
+      0%, 70%, 100% {
+        box-shadow:
+          0 16px 32px rgba(31, 35, 40, 0.16),
+          inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      }
+      82% {
+        box-shadow:
+          0 18px 38px rgba(31, 35, 40, 0.20),
+          0 0 0 7px rgba(150, 151, 156, 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.24);
+      }
+    }
+
+    @keyframes randomSparkle {
+      0%, 68%, 100% { opacity: 0; transform: scale(0.92) rotate(0deg); }
+      78%, 88% { opacity: 1; transform: scale(1.04) rotate(10deg); }
+    }
+
+    @keyframes randomSweep {
+      0%, 72% { left: -50%; opacity: 0; }
+      78% { opacity: 1; }
+      90%, 100% { left: 108%; opacity: 0; }
+    }
+
+
+    .panel {
+      transform-origin: center;
+      animation: panelFloatIn 0.52s cubic-bezier(.2, .9, .2, 1) both;
+    }
+
+    .panel:nth-of-type(2) { animation-delay: 35ms; }
+    .panel:nth-of-type(3) { animation-delay: 70ms; }
+    .panel:nth-of-type(4) { animation-delay: 105ms; }
+
+    @keyframes panelFloatIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.992); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .random-main,
+      .random-main::before,
+      .random-main::after,
+      .panel,
+      .card,
+      .card.just-touched,
+      .status-btn.active,
+      .result-meter-fill,
+      .card.finish-burst,
+      .card.finish-burst::after,
+      .sparkle,
+      .confetti,
+      .result-card,
+      .result-card::before,
+      .result-card::after,
+      .result-rank,
+      .result-stat,
+      .result-chip,
+      .blob-fill,
+      .set-panel::before,
+      .set-panel::after,
+      .soda-bubble,
+      .result-score-orb,
+      .result-orb-shine {
+        animation: none !important;
+      }
+
+      .btn,
+      .card,
+      .status-btn {
+        transition: none !important;
+      }
+    }
+
+    .btn {
+      min-height: 40px;
+      padding: 9px 13px;
+      color: var(--black);
+      background: #fff;
+      border: 1px solid var(--black);
+      border-radius: var(--radius-md);
+      font-weight: 800;
+      transition:
+        transform 0.12s ease,
+        background 0.12s ease,
+        border-color 0.12s ease,
+        box-shadow 0.12s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px) scale(1.012);
+      color: #fff;
+      background: var(--black);
+      border-color: var(--black);
+      box-shadow: 0 11px 24px rgba(15, 17, 20, 0.17);
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.982, 1.018);
+      box-shadow: none;
+    }
+
+    .btn.primary {
+      color: #fff;
+      background: var(--black);
+      border-color: var(--black);
+    }
+
+    .btn.primary:hover {
+      background: #000;
+      border-color: #000;
+    }
+
+    .btn.check-ready {
+      color: #fff;
+      background: #1f2328;
+      border-color: #1f2328;
+      box-shadow: 0 0 0 0 rgba(31, 35, 40, 0.32);
+      animation: checkPulse 1.45s ease-in-out infinite;
+    }
+
+    .btn.check-ready:hover {
+      background: #111418;
+      border-color: #111418;
+    }
+
+    .btn.check-incomplete {
+      background: #fff;
+      color: #303640;
+      border-color: #cfd3d8;
+    }
+
+    .btn.check-incomplete:hover {
+      border-color: #aeb4bc;
+      box-shadow: 0 8px 18px rgba(31, 35, 40, 0.08);
+    }
+
+    .btn.check-flash {
+      animation: checkFlash 0.7s ease both;
+    }
+
+    @keyframes checkPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(31, 35, 40, 0.28); }
+      50% { box-shadow: 0 0 0 7px rgba(31, 35, 40, 0.07); }
+    }
+
+    @keyframes checkFlash {
+      0% { transform: scale(1); filter: brightness(1); }
+      38% {
+        transform: scale(1.035);
+        filter: brightness(1.35);
+        box-shadow: 0 0 0 7px rgba(31, 35, 40, 0.11), 0 12px 28px rgba(31, 35, 40, 0.22);
+      }
+      100% { transform: scale(1); filter: brightness(1); }
+    }
+
+    .btn.soft {
+      color: #fff;
+      background: var(--black);
+      border-color: var(--black);
+    }
+
+    .btn.soft:hover {
+      background: #000;
+      border-color: #000;
+    }
+
+    .btn.danger {
+      color: var(--black);
+      background: #fff;
+      border-color: var(--black);
+    }
+
+    .btn.danger:hover {
+      color: #fff;
+      background: var(--black);
+      border-color: var(--black);
+    }
+
+    .btn.small {
+      min-height: 34px;
+      padding: 7px 10px;
+      font-size: 0.86rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      padding: 12px;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .stat-value {
+      margin-top: 4px;
+      font-size: 1.42rem;
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .set-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .set-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      background: var(--accent-pale);
+      border: 1px solid #dde1e7;
+      border-radius: 999px;
+      color: #4c5560;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+
+    .set-panel {
+      --set-progress: 0%;
+      --soda-opacity: 0;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      transition: box-shadow 0.28s ease, border-color 0.28s ease;
+    }
+
+    .set-panel > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .set-panel::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--set-progress, 0%);
+      opacity: var(--soda-opacity, 0);
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,0.96) 0 2.3px, transparent 4.6px),
+        radial-gradient(circle at 34% 46%, rgba(255,255,255,0.82) 0 1.8px, transparent 4px),
+        radial-gradient(circle at 68% 32%, rgba(255,255,255,0.92) 0 2.5px, transparent 5px),
+        radial-gradient(circle at 88% 70%, rgba(255,255,255,0.74) 0 1.8px, transparent 4.2px),
+        linear-gradient(180deg, rgba(242,243,245,0.96) 0%, rgba(199,201,207,0.98) 54%, rgba(143,146,154,0.94) 100%);
+      background-size: 150px 132px, 118px 106px, 168px 146px, 138px 122px, auto;
+      border-top: 2px solid rgba(18,19,22,0.18);
+      box-shadow:
+        inset 0 18px 30px rgba(255,255,255,0.42),
+        inset 0 -26px 42px rgba(18,19,22,0.13),
+        0 -8px 22px rgba(18,19,22,0.08);
+      transform-origin: bottom center;
+      transition:
+        height 0.52s cubic-bezier(.18, 1.15, .2, 1),
+        opacity 0.32s ease;
+      animation: sodaFizz 4.1s linear infinite;
+      z-index: 0;
+    }
+
+    .set-panel::after {
+      content: "";
+      position: absolute;
+      left: -8%;
+      right: -8%;
+      bottom: calc(var(--set-progress, 0%) - 17px);
+      height: 40px;
+      opacity: var(--soda-opacity, 0);
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 10% 100%, rgba(255,255,255,0.92) 0 20px, transparent 21px),
+        radial-gradient(ellipse at 33% 100%, rgba(255,255,255,0.78) 0 16px, transparent 17px),
+        radial-gradient(ellipse at 58% 100%, rgba(255,255,255,0.94) 0 22px, transparent 23px),
+        radial-gradient(ellipse at 86% 100%, rgba(255,255,255,0.76) 0 17px, transparent 18px),
+        linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,255,255,0.18));
+      filter: drop-shadow(0 3px 8px rgba(18,19,22,0.11));
+      transition:
+        bottom 0.52s cubic-bezier(.18, 1.15, .2, 1),
+        opacity 0.32s ease;
+      animation: sodaWave 2.9s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .set-panel.soda-full {
+      border-color: rgba(18,19,22,0.28);
+      box-shadow:
+        0 10px 28px rgba(31, 35, 40, 0.055),
+        0 0 0 6px rgba(18,19,22,0.035);
+    }
+
+    .soda-bubble {
+      position: absolute;
+      left: var(--bubble-x, 50%);
+      bottom: var(--bubble-bottom, 0%);
+      width: var(--bubble-size, 5px);
+      height: var(--bubble-size, 5px);
+      border-radius: 999px;
+      opacity: var(--soda-opacity, 0);
+      background: rgba(255,255,255,0.95);
+      border: 1px solid rgba(18,19,22,0.14);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.52),
+        0 0 12px rgba(255,255,255,0.88),
+        0 3px 8px rgba(18,19,22,0.08);
+      pointer-events: none;
+      z-index: 1;
+      animation: sodaBubbleRise var(--bubble-duration, 3.2s) var(--bubble-delay, 0ms) ease-in infinite;
+    }
+
+    .set-progress-note {
+      margin-top: 8px;
+      color: #55585f;
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    @keyframes sodaFizz {
+      from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+      to { background-position: 42px -140px, -35px -115px, 58px -165px, -48px -130px, 0 0; }
+    }
+
+    @keyframes sodaWave {
+      0%, 100% { transform: translateX(-8px) scaleY(0.96); }
+      50% { transform: translateX(10px) scaleY(1.08); }
+    }
+
+    @keyframes sodaBubbleRise {
+      0% { transform: translateY(16px) scale(0.58); opacity: 0; }
+      18% { opacity: calc(var(--soda-opacity, 0) * 0.85); }
+      72% { opacity: calc(var(--soda-opacity, 0) * 0.62); }
+      100% { transform: translateY(-128px) scale(1.12); opacity: 0; }
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .set-cards-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .card {
+      position: relative;
+      min-width: 0;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      transform-origin: center;
+      transition:
+        border-color 0.20s ease,
+        background 0.20s ease,
+        transform 0.20s cubic-bezier(.2, 1.2, .2, 1),
+        box-shadow 0.20s ease,
+        filter 0.20s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px) scale(1.012);
+      box-shadow: 0 14px 26px rgba(31, 35, 40, 0.09);
+    }
+
+    .card.status-correct {
+      color: #101114;
+      background:
+        radial-gradient(circle at 18% 10%, rgba(255, 255, 255, 1), transparent 32%),
+        linear-gradient(180deg, #ffffff 0%, #fbfbfb 54%, #f4f4f5 100%);
+      border-color: #c7c8cc;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.92);
+      filter: brightness(1.018);
+    }
+
+    .card.status-unsure {
+      color: #17181b;
+      background:
+        radial-gradient(circle at 18% 9%, rgba(255, 255, 255, 0.74), transparent 30%),
+        linear-gradient(180deg, #dfe0e3 0%, #eeeeef 56%, #f8f8f8 100%);
+      border-color: #8f9197;
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.48),
+        0 10px 22px rgba(18, 19, 22, 0.06);
+    }
+
+    .card.status-wrong {
+      color: #ffffff;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(255, 255, 255, 0.16), transparent 24%),
+        linear-gradient(180deg, #242529 0%, #3b3c42 46%, #5a5b61 100%);
+      border-color: #101114;
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+        0 14px 30px rgba(18, 19, 22, 0.18);
+    }
+
+    .card.status-wrong .chapter-tag,
+    .card.status-wrong .count-chip,
+    .card.status-wrong .card-foot {
+      color: rgba(255, 255, 255, 0.82);
+      background: rgba(255, 255, 255, 0.10);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .card.status-wrong .number {
+      color: #ffffff;
+      text-shadow: 0 1px 12px rgba(255, 255, 255, 0.18);
+    }
+
+    .card.status-none {
+      background: #fff;
+    }
+
+    .card.is-master {
+      border-style: double;
+      border-width: 3px;
+    }
+
+    .card.has-pending {
+      border-style: solid;
+      border-width: 2px;
+      box-shadow:
+        inset 0 0 0 2px rgba(255, 255, 255, 0.62),
+        0 14px 26px rgba(18, 19, 22, 0.10);
+    }
+
+    .card.has-pending.status-correct {
+      background:
+        radial-gradient(circle at 18% 9%, rgba(255, 255, 255, 1), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #ffffff 48%, #f0f1f2 100%);
+      border-color: #9b9da3;
+      filter: brightness(1.04);
+    }
+
+    .card.has-pending.status-unsure {
+      background:
+        radial-gradient(circle at 18% 9%, rgba(255, 255, 255, 0.72), transparent 30%),
+        linear-gradient(180deg, #c9cbd0 0%, #dedfe2 54%, #f4f4f5 100%);
+      border-color: #6f7278;
+    }
+
+    .card.has-pending.status-wrong {
+      color: #ffffff;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(255, 255, 255, 0.12), transparent 24%),
+        linear-gradient(180deg, #111215 0%, #25262b 42%, #47484f 100%);
+      border-color: #050506;
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+        0 17px 34px rgba(18, 19, 22, 0.24);
+    }
+
+    .card.just-touched {
+      animation: cardMunyun 0.46s cubic-bezier(.2, 1.45, .24, 1) both;
+    }
+
+    @keyframes cardMunyun {
+      0% { transform: scale(1); }
+      35% { transform: scale(0.982, 1.034) translateY(1px); }
+      66% { transform: scale(1.024, 0.988) translateY(-3px); }
+      100% { transform: scale(1); }
+    }
+
+    .card.finish-burst {
+      pointer-events: none;
+      animation: cardFinishExit 0.78s cubic-bezier(.2, .82, .22, 1) forwards;
+      animation-delay: var(--exit-delay, 0ms);
+      transform-origin: center;
+      z-index: 1;
+    }
+
+    .card.finish-burst::after {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border-radius: inherit;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 28%, rgba(255, 255, 255, 0.98) 0 2px, transparent 3px),
+        radial-gradient(circle at 78% 20%, rgba(140, 141, 146, 0.48) 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 76%, rgba(164, 165, 170, 0.38) 0 2px, transparent 3px),
+        radial-gradient(circle at 30% 82%, rgba(31, 35, 40, 0.28) 0 1.5px, transparent 3px);
+      opacity: 0;
+      animation: sparkleField 0.78s ease forwards;
+      animation-delay: var(--exit-delay, 0ms);
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 0 10px rgba(150, 151, 156, 0.48);
+      pointer-events: none;
+      animation: tinySparkle 0.7s ease forwards;
+      animation-delay: var(--sparkle-delay, 0ms);
+    }
+
+    @keyframes cardFinishExit {
+      0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0) brightness(1); }
+      42% { opacity: 1; transform: translateY(-6px) scale(1.012); filter: blur(0) brightness(1.1); }
+      100% { opacity: 0; transform: translateY(-18px) scale(0.955); filter: blur(2px) brightness(1.18); }
+    }
+
+    @keyframes sparkleField {
+      0% { opacity: 0; transform: scale(0.92) rotate(0deg); }
+      34% { opacity: 1; }
+      100% { opacity: 0; transform: scale(1.16) rotate(8deg); }
+    }
+
+    @keyframes tinySparkle {
+      0% { opacity: 0; transform: translateY(4px) scale(0.6); }
+      35% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-16px) scale(0.15); }
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .number {
+      font-size: 1.85rem;
+      line-height: 1;
+      font-weight: 850;
+      letter-spacing: -0.06em;
+    }
+
+    .state-label {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 3px 8px;
+      color: #4b5563;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(216, 218, 221, 0.9);
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .state-label.master {
+      color: #222327;
+      background: #eeeeef;
+      border-color: #bfc1c6;
+    }
+
+    .chapter-tag {
+      display: block;
+      margin-top: 8px;
+      color: #545b66;
+      font-size: 0.74rem;
+      font-weight: 800;
+      line-height: 1.35;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .counts {
+      margin: 9px 0 10px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .count-chip {
+      padding: 2px 7px;
+      background: rgba(250, 250, 250, 0.75);
+      border: 1px solid rgba(216, 218, 221, 0.82);
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .status-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .status-btn {
+      min-height: 32px;
+      padding: 4px 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      color: var(--text);
+      font-weight: 900;
+      transform-origin: center;
+      transition:
+        background 0.16s ease,
+        color 0.16s ease,
+        transform 0.18s cubic-bezier(.2, 1.3, .2, 1),
+        border-color 0.16s ease,
+        box-shadow 0.16s ease;
+    }
+
+    .status-btn:hover {
+      transform: translateY(-2px) scale(1.06, 0.98);
+      border-color: var(--black);
+      box-shadow: 0 6px 14px rgba(15, 17, 20, 0.10);
+    }
+
+    .status-btn:active {
+      transform: translateY(1px) scale(0.92, 1.08);
+    }
+
+    .status-btn.active {
+      background: var(--black);
+      color: #fff;
+      border-color: var(--black);
+      animation: buttonPuni 0.34s cubic-bezier(.2, 1.35, .2, 1) both;
+    }
+
+    @keyframes buttonPuni {
+      0% { transform: scale(1); }
+      42% { transform: scale(0.9, 1.13); }
+      72% { transform: scale(1.11, 0.96); }
+      100% { transform: scale(1); }
+    }
+
+    .status-btn.star {
+      color: var(--black);
+      background: #fff;
+      border-color: var(--line-strong);
+    }
+
+    .status-btn.star.active {
+      color: #fff;
+      background: var(--black);
+      border-color: var(--black);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+    }
+
+    .card-foot {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .empty {
+      padding: 28px;
+      margin-top: 16px;
+      color: var(--muted);
+      background: var(--panel-soft);
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius-lg);
+      text-align: center;
+    }
+
+    .result-panel { margin-top: 14px; }
+
+    .result-panel[hidden] { display: none; }
+
+    .result-card {
+      position: relative;
+      overflow: hidden;
+      padding: 18px;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255,255,255,0.96), transparent 13rem),
+        radial-gradient(circle at 88% 10%, rgba(210,211,216,0.64), transparent 16rem),
+        linear-gradient(180deg, #ffffff 0%, #f2f2f3 54%, #e7e8ea 100%);
+      border: 1px solid #c7c8cc;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 18px 38px rgba(18, 19, 22, 0.12);
+      animation: resultMochiPop 0.82s cubic-bezier(.18, 1.42, .2, 1) both;
+      isolation: isolate;
+    }
+
+    .result-card::before {
+      content: "";
+      position: absolute;
+      inset: -24%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 22% 32%, rgba(255,255,255,0.88) 0 1.7px, transparent 3.4px),
+        radial-gradient(circle at 74% 28%, rgba(18,19,22,0.18) 0 2.2px, transparent 4.4px),
+        radial-gradient(circle at 84% 76%, rgba(18,19,22,0.12) 0 1.8px, transparent 4px),
+        radial-gradient(circle at 42% 82%, rgba(255,255,255,0.72) 0 2px, transparent 4px);
+      opacity: 0.9;
+      animation: resultDrift 8s linear infinite;
+      z-index: 0;
+    }
+
+    .result-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.52) 45%, transparent 64%);
+      transform: translateX(-120%);
+      animation: resultGlossBig 1.5s 0.22s ease-out both;
+      z-index: 1;
+    }
+
+    .result-party {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .confetti {
+      position: absolute;
+      top: -18px;
+      left: var(--x, 50%);
+      width: var(--s, 8px);
+      height: var(--s, 8px);
+      border-radius: var(--r, 2px);
+      background: var(--c, #111216);
+      opacity: 0;
+      transform: translateY(-20px) rotate(0deg) scale(0.8);
+      animation: confettiFall var(--d, 2.5s) var(--delay, 0ms) cubic-bezier(.2,.72,.15,1) both;
+    }
+
+    .confetti.light { background: #ffffff; border: 1px solid rgba(18,19,22,0.12); }
+    .confetti.mid { background: #9d9fa5; }
+    .confetti.dark { background: #121316; }
+
+    .result-title {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 12px;
+      font-size: 1.04rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .result-rank {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.4rem;
+      padding: 4px 10px;
+      color: #fff;
+      background: var(--black);
+      border: 1px solid var(--black);
+      border-radius: 999px;
+      font-size: 1.15rem;
+      line-height: 1;
+      box-shadow: 0 10px 24px rgba(18,19,22,0.18);
+      animation: rankWobble 1.25s 0.24s cubic-bezier(.2,1.48,.2,1) both;
+    }
+
+
+    .result-score-row {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: 116px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin: 4px 0 14px;
+    }
+
+    .result-score-orb {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 106px;
+      height: 106px;
+      overflow: hidden;
+      color: #fff;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.56), transparent 23%),
+        radial-gradient(circle at 66% 78%, rgba(255,255,255,0.16), transparent 32%),
+        linear-gradient(145deg, #6a6b71 0%, #17181b 62%, #030304 100%);
+      border: 1px solid #050506;
+      border-radius: 40% 60% 58% 42% / 48% 44% 56% 52%;
+      box-shadow:
+        0 18px 30px rgba(18,19,22,0.24),
+        inset 0 2px 0 rgba(255,255,255,0.18),
+        inset 0 -16px 22px rgba(0,0,0,0.20);
+      animation: scoreOrbMunyun 3.2s ease-in-out infinite;
+    }
+
+    .result-score-orb strong {
+      position: relative;
+      z-index: 2;
+      display: block;
+      font-size: 1.55rem;
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+
+    .result-score-orb span {
+      position: relative;
+      z-index: 2;
+      margin-top: 4px;
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.74;
+    }
+
+    .result-orb-shine {
+      position: absolute;
+      inset: 12px auto auto 20px;
+      width: 28px;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.54);
+      filter: blur(0.4px);
+      transform: rotate(-22deg);
+      animation: orbShine 2.4s ease-in-out infinite;
+    }
+
+    .result-copy {
+      margin: 0;
+      color: #2f3035;
+      font-weight: 880;
+      line-height: 1.45;
+    }
+
+    .result-copy small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 760;
+    }
+
+    @keyframes scoreOrbMunyun {
+      0%, 100% { border-radius: 40% 60% 58% 42% / 48% 44% 56% 52%; transform: translateY(0) scale(1); }
+      34% { border-radius: 54% 46% 42% 58% / 44% 57% 43% 56%; transform: translateY(-4px) scale(1.035, 0.972); }
+      68% { border-radius: 44% 56% 60% 40% / 56% 42% 58% 44%; transform: translateY(2px) scale(0.985, 1.025); }
+    }
+
+    @keyframes orbShine {
+      0%, 100% { opacity: 0.42; transform: rotate(-22deg) translateX(0); }
+      50% { opacity: 0.82; transform: rotate(-22deg) translateX(8px); }
+    }
+
+    .result-meter {
+      position: relative;
+      z-index: 3;
+      margin: 6px 0 14px;
+      padding: 11px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(196, 198, 204, 0.96);
+      border-radius: var(--radius-md);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.92);
+    }
+
+    .result-meter-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      color: #303238;
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+
+    .result-meter-track {
+      height: 18px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, #e4e5e7, #f5f5f6);
+      border: 1px solid #c8c9ce;
+      border-radius: 999px;
+      box-shadow: inset 0 2px 4px rgba(18,19,22,0.08);
+    }
+
+    .result-meter-fill {
+      position: relative;
+      width: var(--result-width, 0%);
+      height: 100%;
+      overflow: hidden;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 22% 20%, rgba(255,255,255,0.36), transparent 30%),
+        linear-gradient(90deg, #4c4d52, #111216 72%, #000000);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.28),
+        0 0 20px rgba(18, 19, 22, 0.18);
+      animation: resultFillMochi 1.28s cubic-bezier(.16,1.25,.18,1) both;
+    }
+
+    .result-meter-fill::before {
+      content: "";
+      position: absolute;
+      inset: 3px 5px auto 7px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.42);
+      filter: blur(0.2px);
+    }
+
+    .result-meter-fill::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.48) 48%, transparent 100%);
+      transform: translateX(-100%);
+      animation: meterGloss 1.45s 0.34s ease-out both;
+    }
+
+    .result-blob-bars {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      gap: 8px;
+      margin: 12px 0 14px;
+    }
+
+    .blob-row {
+      display: grid;
+      grid-template-columns: 62px 1fr 48px;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.78rem;
+      font-weight: 850;
+      color: #303238;
+    }
+
+    .blob-track {
+      height: 13px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(196,198,204,0.92);
+      box-shadow: inset 0 1px 3px rgba(18,19,22,0.08);
+    }
+
+    .blob-fill {
+      width: var(--blob-width, 0%);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blob-a, #e8e9eb), var(--blob-b, #111216));
+      transform-origin: left center;
+      animation: blobMunyun 1.1s var(--blob-delay, 0ms) cubic-bezier(.18,1.35,.2,1) both;
+    }
+
+    .blob-fill.correct { --blob-a: #ffffff; --blob-b: #b9bbc1; border-right: 1px solid rgba(18,19,22,0.18); }
+    .blob-fill.unsure { --blob-a: #d7d8dc; --blob-b: #7f8188; }
+    .blob-fill.wrong { --blob-a: #686a70; --blob-b: #0b0c0e; }
+
+    .result-main {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .result-stat {
+      padding: 11px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid rgba(196, 198, 204, 0.96);
+      border-radius: var(--radius-md);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.94);
+      animation: resultStatBounce 0.62s cubic-bezier(.2,1.42,.18,1) both;
+    }
+
+    .result-stat:nth-child(2) { animation-delay: 70ms; }
+    .result-stat:nth-child(3) { animation-delay: 140ms; }
+
+    .result-stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 780;
+    }
+
+    .result-stat strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 1.32rem;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+    .result-note {
+      position: relative;
+      z-index: 3;
+      margin: 0;
+      color: #303238;
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .result-chips {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .result-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(196, 198, 204, 0.96);
+      border-radius: 999px;
+      color: #303238;
+      font-size: 0.78rem;
+      font-weight: 800;
+      animation: chipFloat 0.72s cubic-bezier(.2,1.28,.2,1) both;
+    }
+
+    @keyframes resultMochiPop {
+      0% { opacity: 0; transform: scale(0.94, 1.04) translateY(14px); filter: blur(2px); }
+      38% { opacity: 1; transform: scale(1.025, 0.976) translateY(-4px); filter: blur(0); }
+      68% { transform: scale(0.992, 1.012) translateY(1px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes resultDrift {
+      from { transform: translate3d(-1%, -1%, 0) rotate(0deg); }
+      to { transform: translate3d(1%, 1%, 0) rotate(8deg); }
+    }
+
+    @keyframes resultGlossBig {
+      from { transform: translateX(-130%); opacity: 0; }
+      22% { opacity: 1; }
+      to { transform: translateX(130%); opacity: 0; }
+    }
+
+    @keyframes confettiFall {
+      0% { opacity: 0; transform: translateY(-24px) rotate(0deg) scale(0.7); }
+      12% { opacity: 1; }
+      78% { opacity: 0.95; }
+      100% { opacity: 0; transform: translateY(230px) rotate(560deg) scale(1.05); }
+    }
+
+    @keyframes rankWobble {
+      0% { transform: scale(0.65) rotate(-10deg); opacity: 0; }
+      45% { transform: scale(1.14, 0.9) rotate(4deg); opacity: 1; }
+      72% { transform: scale(0.95, 1.07) rotate(-2deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    @keyframes resultFillMochi {
+      0% { width: 0%; transform: scaleX(0.85); filter: brightness(1.22); }
+      68% { width: calc(var(--result-width, 0%) + 3%); transform: scaleX(1.03); filter: brightness(1.08); }
+      86% { transform: scaleX(0.985); }
+      100% { width: var(--result-width, 0%); transform: scaleX(1); filter: brightness(1); }
+    }
+
+    @keyframes meterGloss {
+      from { transform: translateX(-120%); opacity: 0; }
+      24% { opacity: 1; }
+      to { transform: translateX(140%); opacity: 0; }
+    }
+
+    @keyframes blobMunyun {
+      0% { width: 0%; transform: scaleX(0.8) scaleY(1.4); opacity: 0.55; }
+      62% { width: calc(var(--blob-width, 0%) + 4%); transform: scaleX(1.04) scaleY(0.86); opacity: 1; }
+      86% { transform: scaleX(0.99) scaleY(1.08); }
+      100% { width: var(--blob-width, 0%); transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes resultStatBounce {
+      from { opacity: 0; transform: translateY(10px) scale(0.96, 1.04); }
+      62% { opacity: 1; transform: translateY(-3px) scale(1.025, 0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes chipFloat {
+      from { opacity: 0; transform: translateY(8px) scale(0.94); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .search-result {
+      margin-top: 14px;
+    }
+
+    .weakness-lists {
+      display: grid;
+      gap: 14px;
+    }
+
+    .weak-box {
+      padding: 12px;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+    }
+
+    .weak-box h3 {
+      margin: 0 0 10px;
+      font-size: 0.93rem;
+    }
+
+    .weak-list {
+      display: grid;
+      gap: 7px;
+      max-height: 240px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .weak-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 9px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+    }
+
+    .weak-item button {
+      flex: 0 0 auto;
+    }
+
+    .data-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .file-label {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 40px;
+      padding: 9px 13px;
+      color: #fff;
+      background: var(--black);
+      border: 1px solid var(--black);
+      border-radius: var(--radius-md);
+      font-weight: 750;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      text-align: center;
+    }
+
+    .file-label:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(31, 35, 40, 0.07);
+    }
+
+    #importFile {
+      display: none;
+    }
+
+
+
+    .sync-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .sync-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .sync-checks {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.66);
+      border: 1px solid rgba(210, 211, 216, 0.9);
+      border-radius: var(--radius-md);
+    }
+
+    .checkline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #3c3d42;
+      font-size: 0.82rem;
+      font-weight: 760;
+    }
+
+    .checkline input {
+      width: auto;
+      min-height: auto;
+      accent-color: #111216;
+    }
+
+    .sync-status {
+      margin-top: 10px;
+      padding: 10px;
+      min-height: 42px;
+      color: #3e4046;
+      background:
+        radial-gradient(circle at 8% 18%, rgba(255,255,255,0.92), transparent 36%),
+        linear-gradient(180deg, rgba(240,241,244,0.88), rgba(250,250,251,0.72));
+      border: 1px solid rgba(200, 202, 208, 0.92);
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      font-weight: 780;
+      line-height: 1.45;
+    }
+
+    .sync-status.ok {
+      color: #15161a;
+      border-color: #aeb0b8;
+      background: linear-gradient(180deg, #f7f7f8, #ededf0);
+    }
+
+    .sync-status.error {
+      color: #fff;
+      border-color: #111216;
+      background: linear-gradient(180deg, #3e3f45, #111216);
+    }
+
+    .sync-status.loading::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 7px;
+      border-radius: 999px;
+      background: #111216;
+      animation: syncPulse 0.92s ease-in-out infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes syncPulse {
+      0%, 100% { transform: scale(0.82); opacity: 0.38; }
+      50% { transform: scale(1.22); opacity: 1; }
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 100;
+      width: min(360px, calc(100% - 36px));
+      padding: 12px 14px;
+      color: #fff;
+      background: rgba(37, 43, 51, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 16px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      font-weight: 700;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.error {
+      background: rgba(105, 57, 57, 0.96);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .side .panel:first-child {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        width: min(100% - 18px, 1180px);
+        padding-top: 16px;
+      }
+
+      .hero,
+      .panel {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .hero-row {
+        align-items: flex-start;
+      }
+
+      .side {
+        grid-template-columns: 1fr;
+      }
+
+      .sub-action-row {
+        grid-template-columns: 1fr;
+      }
+
+      .random-main {
+        min-height: 62px;
+        font-size: 1.18rem;
+      }
+
+      .field.two {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+        gap: 8px;
+      }
+
+      .set-cards-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .result-main {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 10px;
+      }
+
+      .number {
+        font-size: 1.58rem;
+      }
+
+      .status-buttons {
+        gap: 5px;
+      }
+
+      .status-btn {
+        min-height: 30px;
+      }
+    }
+
+    @media (max-width: 720px) {
+
+      .result-score-row {
+        grid-template-columns: 92px 1fr;
+      }
+
+      .result-score-orb {
+        width: 88px;
+        height: 88px;
+      }
+
+      .result-score-orb strong {
+        font-size: 1.28rem;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cards-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .set-cards-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .state-label {
+        max-width: 76px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="hero">
+      <div class="hero-row">
+        <div>
+          <h1>Blank Trainer</h1>
+        </div>
+        <div class="storage-state" aria-label="storage">
+          <span class="dot" aria-hidden="true"></span>
+          Local Save
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="side">
+        <section class="panel" aria-labelledby="controlTitle">
+          <div class="panel-title">
+            <h2 id="controlTitle">Control</h2>
+          </div>
+
+          <div class="form-grid">
+            <div class="hero-actions">
+              <button class="btn primary random-main" id="drawButton" type="button">Random</button>
+              <div class="sub-action-row">
+                <button class="btn clear-quiet" id="clearSetButton" type="button">Clear</button>
+                <button class="btn soft pick-one" id="quickOneButton" type="button">Pick 1</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="countPreset">Count</label>
+              <select id="countPreset">
+                <option value="5">5</option>
+                <option value="25" selected>25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+
+            <div class="field" id="customCountWrap" hidden>
+              <label for="customCount">Custom Count</label>
+              <input id="customCount" type="number" min="1" max="1596" value="20" inputmode="numeric" />
+            </div>
+
+            <div class="field two">
+              <div class="field">
+                <label for="startNumber">Start</label>
+                <input id="startNumber" type="number" min="1" max="1596" value="1" inputmode="numeric" />
+              </div>
+              <div class="field">
+                <label for="endNumber">End</label>
+                <input id="endNumber" type="number" min="1" max="1596" value="1596" inputmode="numeric" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="chapterSelect">Chapter</label>
+              <select id="chapterSelect">
+                <option value="all">All Chapters</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="mode">Mode</label>
+              <select id="mode">
+                <option value="all">Random All</option>
+                <option value="unattempted">New Only</option>
+                <option value="wrong">Wrong Only</option>
+                <option value="unsure">Unsure Only</option>
+                <option value="wrongOrUnsure">Wrong + Unsure</option>
+                <option value="starred">Starred Only</option>
+                <option value="excludeMaster">Exclude Master</option>
+              </select>
+            </div>
+
+            <div class="button-row">
+              <button class="btn soft" id="weakDrawButton" type="button">Weak ×100</button>
+              <button class="btn soft" id="unattemptedPriorityButton" type="button">New First ×100</button>
+            </div>
+
+            <p class="hint">No duplicates. Chapter auto-fills the range.</p>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="statsTitle">
+          <div class="panel-title">
+            <h2 id="statsTitle">Stats</h2>
+          </div>
+          <div class="stats-grid" id="statsGrid"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="searchTitle">
+          <div class="panel-title">
+            <h2 id="searchTitle">Search</h2>
+          </div>
+          <div class="field">
+            <label for="searchNumber">Number</label>
+            <input id="searchNumber" type="number" min="1" max="1596" placeholder="e.g. 256" inputmode="numeric" />
+          </div>
+          <div class="button-row" style="margin-top: 10px;">
+            <button class="btn soft" id="searchButton" type="button">Show</button>
+          </div>
+          <div class="search-result" id="searchResult"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="dataTitle">
+          <div class="panel-title">
+            <h2 id="dataTitle">Data</h2>
+          </div>
+          <div class="data-actions">
+            <button class="btn soft" id="exportButton" type="button">Export JSON</button>
+            <label class="file-label" for="importFile">Import JSON</label>
+            <input id="importFile" type="file" accept="application/json,.json" />
+            <button class="btn danger" id="resetButton" type="button">Reset All</button>
+          </div>
+          <p class="hint" style="margin-top: 12px;">Import replaces local records and the current set.</p>
+        </section>
+
+
+        <section class="panel" aria-labelledby="syncTitle">
+          <div class="panel-title">
+            <h2 id="syncTitle">GitHub Sync</h2>
+          </div>
+          <div class="sync-grid">
+            <div class="sync-row">
+              <div class="field">
+                <label for="githubOwner">Owner</label>
+                <input id="githubOwner" type="text" placeholder="your-name" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="githubRepo">Repo</label>
+                <input id="githubRepo" type="text" placeholder="blank-trainer" autocomplete="off" />
+              </div>
+            </div>
+            <div class="sync-row">
+              <div class="field">
+                <label for="githubBranch">Branch</label>
+                <input id="githubBranch" type="text" value="main" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="githubPath">Save Path</label>
+                <input id="githubPath" type="text" value="data/blank-trainer-save.json" autocomplete="off" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="githubToken">Token</label>
+              <input id="githubToken" type="password" placeholder="fine-grained token" autocomplete="off" />
+            </div>
+            <div class="sync-checks">
+              <label class="checkline"><input id="githubRememberToken" type="checkbox" /> Remember token on this browser</label>
+              <label class="checkline"><input id="githubAutoPush" type="checkbox" /> Auto Push after Check</label>
+            </div>
+            <div class="button-row">
+              <button class="btn soft" id="githubPullButton" type="button">Pull</button>
+              <button class="btn" id="githubPushButton" type="button">Push</button>
+            </div>
+            <div class="sync-status" id="githubSyncStatus">Not configured.</div>
+          </div>
+          <p class="hint" style="margin-top: 12px;">Pull before study. Push after Result. Auto Push sends each Check result.</p>
+        </section>
+      </aside>
+
+      <main class="main">
+        <section class="panel set-panel" id="currentSetPanel" aria-labelledby="currentSetTitle">
+          <div class="set-header">
+            <div>
+              <div class="panel-title" style="margin-bottom: 6px;">
+                <h2 id="currentSetTitle">Current Set</h2>
+              </div>
+              <p class="hint">Select ○△×, then Check. Unmarked items count as × after confirmation.</p>
+            </div>
+            <div class="set-meta">
+              <span class="pill" id="setCountPill">0 items</span>
+              <span class="pill" id="setModePill">No Set</span>
+              <span class="pill" id="pendingCountPill">Marked 0/0</span>
+            </div>
+          </div>
+          <div class="button-row" style="margin-top: 14px;">
+            <button class="btn" id="checkButton" type="button" title="Check current marks">Check</button>
+            <button class="btn" id="clearPendingButton" type="button">Clear Marks</button>
+          </div>
+          <div class="soda-bubbles" aria-hidden="true">
+            <span class="soda-bubble" style="--bubble-x: 7%; --bubble-size: 6px; --bubble-duration: 3.1s; --bubble-delay: 0ms;"></span>
+            <span class="soda-bubble" style="--bubble-x: 16%; --bubble-size: 4px; --bubble-duration: 3.7s; --bubble-delay: 240ms;"></span>
+            <span class="soda-bubble" style="--bubble-x: 25%; --bubble-size: 5px; --bubble-duration: 3.4s; --bubble-delay: 520ms;"></span>
+            <span class="soda-bubble" style="--bubble-x: 38%; --bubble-size: 7px; --bubble-duration: 4.0s; --bubble-delay: 120ms;"></span>
+            <span class="soda-bubble" style="--bubble-x: 49%; --bubble-size: 4px; --bubble-duration: 3.0s; --bubble-delay: 850ms;"></span>
+            <span class="soda-bubble" style="--bubble-x: 61%; --bubble-size: 6px; --bubble-duration: 3.8s; --bubble-delay: 430ms;"></span>
+            <span class="soda-bubble" style="--bubble-x: 73%; --bubble-size: 5px; --bubble-duration: 4.2s; --bubble-delay: 680ms;"></span>
+            <span class="soda-bubble" style="--bubble-x: 84%; --bubble-size: 4px; --bubble-duration: 3.5s; --bubble-delay: 1080ms;"></span>
+            <span class="soda-bubble" style="--bubble-x: 93%; --bubble-size: 6px; --bubble-duration: 3.9s; --bubble-delay: 920ms;"></span>
+          </div>
+          <div class="result-panel" id="lastResultPanel" hidden></div>
+          <div id="currentSetCards"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="weaknessTitle">
+          <div class="panel-title">
+            <div>
+              <h2 id="weaknessTitle">Weakness</h2>
+              <p class="hint">Sorted by × and △ counts.</p>
+            </div>
+            <button class="btn small" id="refreshWeaknessButton" type="button">Refresh</button>
+          </div>
+          <div class="weakness-lists">
+            <div class="weak-box">
+              <h3>× High</h3>
+              <div class="weak-list" id="wrongList"></div>
+            </div>
+            <div class="weak-box">
+              <h3>△ High</h3>
+              <div class="weak-list" id="unsureList"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const TOTAL_QUESTIONS = 1596;
+      const STORAGE_RECORDS_KEY = "blankTrainer.records.v1";
+      const STORAGE_SET_KEY = "blankTrainer.currentSet.v1";
+      const STORAGE_SET_INFO_KEY = "blankTrainer.currentSetInfo.v1";
+      const STORAGE_PENDING_KEY = "blankTrainer.pendingMarks.v1";
+      const STORAGE_LAST_RESULT_KEY = "blankTrainer.lastResult.v1";
+      const STORAGE_RESULT_HISTORY_KEY = "blankTrainer.resultHistory.v1";
+      const STORAGE_SYNC_BASELINE_KEY = "blankTrainer.syncBaselineRecords.v1";
+      const STORAGE_GITHUB_SETTINGS_KEY = "blankTrainer.githubSettings.v1";
+      const RESULT_HISTORY_LIMIT = 500;
+
+      const STATUS = {
+        none: {
+          key: "none",
+          symbol: "未",
+          label: "New",
+          className: "status-none"
+        },
+        correct: {
+          key: "correct",
+          symbol: "○",
+          label: "Correct",
+          className: "status-correct"
+        },
+        unsure: {
+          key: "unsure",
+          symbol: "△",
+          label: "Unsure",
+          className: "status-unsure"
+        },
+        wrong: {
+          key: "wrong",
+          symbol: "×",
+          label: "Wrong",
+          className: "status-wrong"
+        }
+      };
+
+      const MODE_LABELS = {
+        all: "Random All",
+        unattempted: "New Only",
+        wrong: "Wrong Only",
+        unsure: "Unsure Only",
+        wrongOrUnsure: "Wrong + Unsure",
+        starred: "Starred Only",
+        excludeMaster: "Exclude Master",
+        weakness100: "Weak ×100",
+        unattemptedPriority100: "New First ×100",
+        quickOne: "Pick 1"
+      };
+
+      const CHAPTERS = [
+        { start: 1, end: 31, name: "時制", chapter: "1章" },
+        { start: 32, end: 39, name: "受動態", chapter: "2章" },
+        { start: 40, end: 79, name: "助動詞", chapter: "3章" },
+        { start: 80, end: 113, name: "仮定法", chapter: "4章" },
+        { start: 114, end: 154, name: "不定詞", chapter: "5章" },
+        { start: 155, end: 178, name: "動名詞", chapter: "6章" },
+        { start: 179, end: 204, name: "分詞", chapter: "7章" },
+        { start: 205, end: 259, name: "関係詞", chapter: "8章" },
+        { start: 260, end: 321, name: "接続詞", chapter: "9章" },
+        { start: 322, end: 373, name: "前置詞", chapter: "10章" },
+        { start: 374, end: 430, name: "比較", chapter: "11章" },
+        { start: 431, end: 447, name: "主語と述語動詞の一致", chapter: "12章" },
+        { start: 448, end: 474, name: "疑問文", chapter: "13章" },
+        { start: 475, end: 493, name: "否定", chapter: "14章" },
+        { start: 494, end: 519, name: "語順(倒置)・省略・強調", chapter: "15章" },
+        { start: 520, end: 525, name: "話法", chapter: "16章" },
+        { start: 526, end: 671, name: "動詞の語法", chapter: "17章" },
+        { start: 672, end: 704, name: "名詞の語法", chapter: "18章" },
+        { start: 705, end: 762, name: "代名詞の語法", chapter: "19章" },
+        { start: 763, end: 812, name: "形容詞の語法", chapter: "20章" },
+        { start: 813, end: 847, name: "副詞の語法", chapter: "21章" },
+        { start: 848, end: 1114, name: "動詞を中心とするイディオム", chapter: "22章" },
+        { start: 1115, end: 1182, name: "形容詞・副詞を中心とするイディオム", chapter: "23章" },
+        { start: 1183, end: 1268, name: "名詞を中心とするイディオム", chapter: "24章" },
+        { start: 1269, end: 1307, name: "前置詞の働きをするイディオム(群前置詞)", chapter: "25章" },
+        { start: 1308, end: 1323, name: "ことわざ・慣用表現", chapter: "26章" },
+        { start: 1324, end: 1414, name: "会話表現", chapter: "27章" },
+        { start: 1415, end: 1513, name: "語彙問題", chapter: "28章" },
+        { start: 1514, end: 1541, name: "重要多義語", chapter: "29章" },
+        { start: 1542, end: 1596, name: "読解・作文につなげる55問", chapter: "30章" }
+      ];
+
+      const dom = {
+        countPreset: document.getElementById("countPreset"),
+        customCountWrap: document.getElementById("customCountWrap"),
+        customCount: document.getElementById("customCount"),
+        startNumber: document.getElementById("startNumber"),
+        endNumber: document.getElementById("endNumber"),
+        chapterSelect: document.getElementById("chapterSelect"),
+        mode: document.getElementById("mode"),
+        drawButton: document.getElementById("drawButton"),
+        quickOneButton: document.getElementById("quickOneButton"),
+        clearSetButton: document.getElementById("clearSetButton"),
+        weakDrawButton: document.getElementById("weakDrawButton"),
+        unattemptedPriorityButton: document.getElementById("unattemptedPriorityButton"),
+        statsGrid: document.getElementById("statsGrid"),
+        setCountPill: document.getElementById("setCountPill"),
+        setModePill: document.getElementById("setModePill"),
+        pendingCountPill: document.getElementById("pendingCountPill"),
+        checkButton: document.getElementById("checkButton"),
+        clearPendingButton: document.getElementById("clearPendingButton"),
+        lastResultPanel: document.getElementById("lastResultPanel"),
+        currentSetPanel: document.getElementById("currentSetPanel"),
+        currentSetCards: document.getElementById("currentSetCards"),
+        searchNumber: document.getElementById("searchNumber"),
+        searchButton: document.getElementById("searchButton"),
+        searchResult: document.getElementById("searchResult"),
+        exportButton: document.getElementById("exportButton"),
+        importFile: document.getElementById("importFile"),
+        resetButton: document.getElementById("resetButton"),
+        githubOwner: document.getElementById("githubOwner"),
+        githubRepo: document.getElementById("githubRepo"),
+        githubBranch: document.getElementById("githubBranch"),
+        githubPath: document.getElementById("githubPath"),
+        githubToken: document.getElementById("githubToken"),
+        githubRememberToken: document.getElementById("githubRememberToken"),
+        githubAutoPush: document.getElementById("githubAutoPush"),
+        githubPullButton: document.getElementById("githubPullButton"),
+        githubPushButton: document.getElementById("githubPushButton"),
+        githubSyncStatus: document.getElementById("githubSyncStatus"),
+        wrongList: document.getElementById("wrongList"),
+        unsureList: document.getElementById("unsureList"),
+        refreshWeaknessButton: document.getElementById("refreshWeaknessButton"),
+        toast: document.getElementById("toast")
+      };
+
+      let records = loadRecords();
+      let currentSet = loadCurrentSet();
+      let currentSetInfo = loadCurrentSetInfo();
+      let pendingMarks = loadPendingMarks();
+      let lastResult = loadLastResult();
+      let resultHistory = loadResultHistory();
+      let syncBaselineRecords = loadSyncBaselineRecords();
+      if (!syncBaselineRecords) {
+        syncBaselineRecords = cloneRecords(records);
+        saveSyncBaselineRecords();
+      }
+      let githubSettings = loadGithubSettings();
+      let toastTimer = null;
+      let recentlyTouchedNumber = null;
+
+      init();
+
+      function init() {
+        populateChapterSelect();
+        renderGithubSettings();
+        bindEvents();
+        renderAll();
+      }
+
+      function bindEvents() {
+        dom.countPreset.addEventListener("change", function () {
+          const isCustom = dom.countPreset.value === "custom";
+          dom.customCountWrap.hidden = !isCustom;
+          if (isCustom) {
+            dom.customCount.focus();
+          }
+        });
+
+        dom.chapterSelect.addEventListener("change", function () {
+          const selected = dom.chapterSelect.value;
+          if (selected === "all") {
+            dom.startNumber.value = 1;
+            dom.endNumber.value = TOTAL_QUESTIONS;
+            return;
+          }
+
+          const chapter = CHAPTERS.find(function (item) {
+            return getChapterValue(item) === selected;
+          });
+
+          if (!chapter) return;
+          dom.startNumber.value = chapter.start;
+          dom.endNumber.value = chapter.end;
+        });
+
+        dom.startNumber.addEventListener("input", syncChapterSelectToRange);
+        dom.endNumber.addEventListener("input", syncChapterSelectToRange);
+
+        dom.drawButton.addEventListener("click", function () {
+          try {
+            const range = getRange();
+            const count = getRequestedCount();
+            const mode = dom.mode.value;
+            const candidates = getCandidates(mode, range.start, range.end);
+            drawFromCandidates(candidates, count, mode);
+          } catch (error) {
+            showToast(error.message, true);
+          }
+        });
+
+        dom.quickOneButton.addEventListener("click", function () {
+          try {
+            const range = getRange();
+            const mode = dom.mode.value;
+            const candidates = getCandidates(mode, range.start, range.end);
+            drawFromCandidates(candidates, 1, "quickOne");
+          } catch (error) {
+            showToast(error.message, true);
+          }
+        });
+
+        dom.clearSetButton.addEventListener("click", function () {
+          currentSet = [];
+          currentSetInfo = {
+            mode: "No Set",
+            createdAt: null,
+            range: null
+          };
+          pendingMarks = {};
+          saveCurrentSet();
+          saveCurrentSetInfo();
+          savePendingMarks();
+          renderCurrentSet();
+          showToast("Set cleared");
+        });
+
+        dom.checkButton.addEventListener("click", applyPendingMarks);
+
+        dom.clearPendingButton.addEventListener("click", function () {
+          const count = getPendingCount();
+          pendingMarks = {};
+          savePendingMarks();
+          renderAll();
+          showToast(count > 0 ? "Marks cleared" : "No marks to clear");
+        });
+
+        dom.weakDrawButton.addEventListener("click", function () {
+          try {
+            const range = getRange();
+            const candidates = getWeaknessCandidates(range.start, range.end);
+            drawFromCandidates(candidates, 100, "weakness100", false);
+          } catch (error) {
+            showToast(error.message, true);
+          }
+        });
+
+        dom.unattemptedPriorityButton.addEventListener("click", function () {
+          try {
+            const range = getRange();
+            const selected = getUnattemptedPrioritySet(range.start, range.end, 100);
+            if (selected.length === 0) {
+              throw new Error("No questions in this range.");
+            }
+            currentSet = sortNumbersAsc(selected);
+            currentSetInfo = {
+              mode: MODE_LABELS.unattemptedPriority100,
+              createdAt: new Date().toISOString(),
+              range: range
+            };
+            pendingMarks = {};
+            lastResult = null;
+            saveCurrentSet();
+            saveCurrentSetInfo();
+            savePendingMarks();
+            saveLastResult();
+            renderCurrentSet();
+            renderLastResult();
+            showToast(selected.length + " selected");
+          } catch (error) {
+            showToast(error.message, true);
+          }
+        });
+
+        dom.searchButton.addEventListener("click", renderSearchResult);
+
+        dom.searchNumber.addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            renderSearchResult();
+          }
+        });
+
+        dom.exportButton.addEventListener("click", exportJson);
+        dom.importFile.addEventListener("change", importJson);
+        dom.githubPullButton.addEventListener("click", function () { pullFromGitHub(false); });
+        dom.githubPushButton.addEventListener("click", function () { pushToGitHub(false); });
+        [dom.githubOwner, dom.githubRepo, dom.githubBranch, dom.githubPath, dom.githubRememberToken, dom.githubAutoPush].forEach(function (input) {
+          input.addEventListener("change", saveGithubSettingsFromForm);
+          input.addEventListener("input", saveGithubSettingsFromForm);
+        });
+        dom.githubToken.addEventListener("change", saveGithubSettingsFromForm);
+
+        dom.resetButton.addEventListener("click", function () {
+          const ok = window.confirm("Reset all data? Records, stars, current set, and marks will be deleted.");
+          if (!ok) return;
+
+          records = {};
+          currentSet = [];
+          currentSetInfo = {
+            mode: "No Set",
+            createdAt: null,
+            range: null
+          };
+          pendingMarks = {};
+          lastResult = null;
+          resultHistory = [];
+          syncBaselineRecords = {};
+
+          localStorage.removeItem(STORAGE_RECORDS_KEY);
+          localStorage.removeItem(STORAGE_SET_KEY);
+          localStorage.removeItem(STORAGE_SET_INFO_KEY);
+          localStorage.removeItem(STORAGE_PENDING_KEY);
+          localStorage.removeItem(STORAGE_LAST_RESULT_KEY);
+          localStorage.removeItem(STORAGE_RESULT_HISTORY_KEY);
+          localStorage.removeItem(STORAGE_SYNC_BASELINE_KEY);
+
+          renderAll();
+          showToast("All data reset");
+        });
+
+        dom.refreshWeaknessButton.addEventListener("click", function () {
+          renderWeaknessLists();
+          showToast("Weakness refreshed");
+        });
+      }
+
+      function populateChapterSelect() {
+        const options = ['<option value="all">All Chapters</option>'].concat(CHAPTERS.map(function (chapter) {
+          const label = chapter.chapter.replace('章', '') + '. ' + chapter.name + ' (' + chapter.start + '-' + chapter.end + ')';
+          return '<option value="' + escapeHtml(getChapterValue(chapter)) + '">' + escapeHtml(label) + '</option>';
+        }));
+
+        dom.chapterSelect.innerHTML = options.join("");
+      }
+
+      function getChapterValue(chapter) {
+        return chapter.start + '-' + chapter.end;
+      }
+
+      function syncChapterSelectToRange() {
+        const start = Number(dom.startNumber.value);
+        const end = Number(dom.endNumber.value);
+
+        const chapter = CHAPTERS.find(function (item) {
+          return item.start === start && item.end === end;
+        });
+
+        dom.chapterSelect.value = chapter ? getChapterValue(chapter) : "all";
+      }
+
+      function getChapter(number) {
+        return CHAPTERS.find(function (chapter) {
+          return number >= chapter.start && number <= chapter.end;
+        }) || null;
+      }
+
+      function getChapterLabel(number) {
+        const chapter = getChapter(number);
+        if (!chapter) return "No Chapter";
+        return "Ch." + chapter.chapter.replace("章", "") + " " + chapter.name;
+      }
+
+      function loadRecords() {
+        const raw = localStorage.getItem(STORAGE_RECORDS_KEY);
+        if (!raw) return {};
+
+        try {
+          const parsed = JSON.parse(raw);
+          return sanitizeRecords(parsed);
+        } catch (error) {
+          console.warn("記録データの読み込みに失敗しました", error);
+          return {};
+        }
+      }
+
+      function loadCurrentSet() {
+        const raw = localStorage.getItem(STORAGE_SET_KEY);
+        if (!raw) return [];
+
+        try {
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return [];
+          return uniqueValidNumbers(parsed);
+        } catch (error) {
+          console.warn("今回のセットの読み込みに失敗しました", error);
+          return [];
+        }
+      }
+
+      function loadCurrentSetInfo() {
+        const raw = localStorage.getItem(STORAGE_SET_INFO_KEY);
+        if (!raw) {
+          return {
+            mode: "No Set",
+            createdAt: null,
+            range: null
+          };
+        }
+
+        try {
+          const parsed = JSON.parse(raw);
+          return {
+            mode: typeof parsed.mode === "string" ? parsed.mode : "No Set",
+            createdAt: typeof parsed.createdAt === "string" ? parsed.createdAt : null,
+            range: parsed.range && Number.isInteger(parsed.range.start) && Number.isInteger(parsed.range.end)
+              ? parsed.range
+              : null
+          };
+        } catch (error) {
+          return {
+            mode: "No Set",
+            createdAt: null,
+            range: null
+          };
+        }
+      }
+
+
+      function loadPendingMarks() {
+        const raw = localStorage.getItem(STORAGE_PENDING_KEY);
+        if (!raw) return {};
+
+        try {
+          return sanitizePendingMarks(JSON.parse(raw));
+        } catch (error) {
+          console.warn("選択データの読み込みに失敗しました", error);
+          return {};
+        }
+      }
+
+      function loadLastResult() {
+        const raw = localStorage.getItem(STORAGE_LAST_RESULT_KEY);
+        if (!raw) return null;
+
+        try {
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== "object") return null;
+          const total = toNonNegativeInt(parsed.total);
+          if (total < 1) return null;
+
+          return {
+            id: typeof parsed.id === "string" ? parsed.id : null,
+            createdAt: typeof parsed.createdAt === "string" ? parsed.createdAt : null,
+            total: total,
+            correct: toNonNegativeInt(parsed.correct),
+            unsure: toNonNegativeInt(parsed.unsure),
+            wrong: toNonNegativeInt(parsed.wrong),
+            accuracy: Number.isFinite(Number(parsed.accuracy)) ? Number(parsed.accuracy) : 0,
+            topMistakeChapter: parsed.topMistakeChapter && typeof parsed.topMistakeChapter === "object" ? parsed.topMistakeChapter : null,
+            mistakeChapters: Array.isArray(parsed.mistakeChapters) ? parsed.mistakeChapters : []
+          };
+        } catch (error) {
+          return null;
+        }
+      }
+
+
+      function loadResultHistory() {
+        const raw = localStorage.getItem(STORAGE_RESULT_HISTORY_KEY);
+        if (!raw) return [];
+
+        try {
+          return sanitizeResultHistory(JSON.parse(raw));
+        } catch (error) {
+          console.warn("Result history could not be loaded", error);
+          return [];
+        }
+      }
+
+      function saveResultHistory() {
+        resultHistory = sanitizeResultHistory(resultHistory).slice(-RESULT_HISTORY_LIMIT);
+        localStorage.setItem(STORAGE_RESULT_HISTORY_KEY, JSON.stringify(resultHistory));
+      }
+
+      function loadSyncBaselineRecords() {
+        const raw = localStorage.getItem(STORAGE_SYNC_BASELINE_KEY);
+        if (!raw) return null;
+
+        try {
+          return sanitizeRecords(JSON.parse(raw));
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function saveSyncBaselineRecords() {
+        localStorage.setItem(STORAGE_SYNC_BASELINE_KEY, JSON.stringify(syncBaselineRecords || {}));
+      }
+
+      function loadGithubSettings() {
+        const raw = localStorage.getItem(STORAGE_GITHUB_SETTINGS_KEY);
+        if (!raw) {
+          return {
+            owner: "",
+            repo: "",
+            branch: "main",
+            path: "data/blank-trainer-save.json",
+            token: "",
+            rememberToken: false,
+            autoPush: false
+          };
+        }
+
+        try {
+          const parsed = JSON.parse(raw);
+          return {
+            owner: typeof parsed.owner === "string" ? parsed.owner : "",
+            repo: typeof parsed.repo === "string" ? parsed.repo : "",
+            branch: typeof parsed.branch === "string" && parsed.branch.trim() ? parsed.branch : "main",
+            path: typeof parsed.path === "string" && parsed.path.trim() ? parsed.path : "data/blank-trainer-save.json",
+            token: typeof parsed.token === "string" ? parsed.token : "",
+            rememberToken: Boolean(parsed.rememberToken),
+            autoPush: Boolean(parsed.autoPush)
+          };
+        } catch (error) {
+          return {
+            owner: "",
+            repo: "",
+            branch: "main",
+            path: "data/blank-trainer-save.json",
+            token: "",
+            rememberToken: false,
+            autoPush: false
+          };
+        }
+      }
+
+      function saveGithubSettings(settings) {
+        const safe = settings || getGithubSettingsFromForm(false);
+        const payload = {
+          owner: safe.owner || "",
+          repo: safe.repo || "",
+          branch: safe.branch || "main",
+          path: safe.path || "data/blank-trainer-save.json",
+          rememberToken: Boolean(safe.rememberToken),
+          autoPush: Boolean(safe.autoPush),
+          token: safe.rememberToken ? (safe.token || "") : ""
+        };
+        githubSettings = payload;
+        localStorage.setItem(STORAGE_GITHUB_SETTINGS_KEY, JSON.stringify(payload));
+        renderGithubSyncStatus("Ready for GitHub sync.");
+      }
+
+      function saveGithubSettingsFromForm() {
+        try {
+          const settings = getGithubSettingsFromForm(false);
+          saveGithubSettings(settings);
+        } catch (error) {
+          renderGithubSyncStatus(error.message, true);
+        }
+      }
+
+      function renderGithubSettings() {
+        dom.githubOwner.value = githubSettings.owner || "";
+        dom.githubRepo.value = githubSettings.repo || "";
+        dom.githubBranch.value = githubSettings.branch || "main";
+        dom.githubPath.value = githubSettings.path || "data/blank-trainer-save.json";
+        dom.githubToken.value = githubSettings.token || "";
+        dom.githubRememberToken.checked = Boolean(githubSettings.rememberToken);
+        dom.githubAutoPush.checked = Boolean(githubSettings.autoPush);
+        renderGithubSyncStatus(githubSettings.owner && githubSettings.repo ? "Ready for GitHub sync." : "Not configured.");
+      }
+
+      function saveLastResult() {
+        if (lastResult) {
+          localStorage.setItem(STORAGE_LAST_RESULT_KEY, JSON.stringify(lastResult));
+        } else {
+          localStorage.removeItem(STORAGE_LAST_RESULT_KEY);
+        }
+      }
+
+      function saveRecords() {
+        localStorage.setItem(STORAGE_RECORDS_KEY, JSON.stringify(records));
+      }
+
+      function saveCurrentSet() {
+        localStorage.setItem(STORAGE_SET_KEY, JSON.stringify(currentSet));
+      }
+
+      function saveCurrentSetInfo() {
+        localStorage.setItem(STORAGE_SET_INFO_KEY, JSON.stringify(currentSetInfo));
+      }
+
+      function savePendingMarks() {
+        localStorage.setItem(STORAGE_PENDING_KEY, JSON.stringify(pendingMarks));
+      }
+
+      function sanitizePendingMarks(value) {
+        const result = {};
+        if (!value || typeof value !== "object") return result;
+
+        Object.keys(value).forEach(function (key) {
+          const number = Number(key);
+          const status = value[key];
+          if (!isValidNumber(number)) return;
+          if (status !== "correct" && status !== "unsure" && status !== "wrong") return;
+          result[number] = status;
+        });
+
+        return result;
+      }
+
+
+      function sanitizeResultHistory(value) {
+        if (!Array.isArray(value)) return [];
+        const seen = new Set();
+        const result = [];
+
+        value.forEach(function (event) {
+          if (!event || typeof event !== "object") return;
+          const id = typeof event.id === "string" && event.id.trim() ? event.id : null;
+          if (!id || seen.has(id)) return;
+          const entries = Array.isArray(event.entries) ? event.entries.map(function (item) {
+            return {
+              number: Number(item.number),
+              status: typeof item.status === "string" ? item.status : "wrong"
+            };
+          }).filter(function (item) {
+            return isValidNumber(item.number) && item.status !== "none" && STATUS[item.status];
+          }) : [];
+          if (!entries.length) return;
+          seen.add(id);
+          result.push({
+            id: id,
+            createdAt: typeof event.createdAt === "string" ? event.createdAt : null,
+            total: toNonNegativeInt(event.total || entries.length),
+            correct: toNonNegativeInt(event.correct),
+            unsure: toNonNegativeInt(event.unsure),
+            wrong: toNonNegativeInt(event.wrong),
+            accuracy: Number.isFinite(Number(event.accuracy)) ? Number(event.accuracy) : 0,
+            entries: entries
+          });
+        });
+
+        result.sort(function (a, b) {
+          return String(a.createdAt || "").localeCompare(String(b.createdAt || "")) || a.id.localeCompare(b.id);
+        });
+        return result.slice(-RESULT_HISTORY_LIMIT);
+      }
+
+      function cloneRecords(source) {
+        return sanitizeRecords(JSON.parse(JSON.stringify(source || {})));
+      }
+
+      function sanitizeRecords(value) {
+        const result = {};
+        if (!value || typeof value !== "object") return result;
+
+        Object.keys(value).forEach(function (key) {
+          const number = Number(key);
+          if (!isValidNumber(number)) return;
+
+          const raw = value[key];
+          if (!raw || typeof raw !== "object") return;
+
+          result[number] = sanitizeRecord(raw, number);
+        });
+
+        return result;
+      }
+
+      function sanitizeRecord(raw, number) {
+        const status = STATUS[raw.status] ? raw.status : "none";
+        const correctCount = toNonNegativeInt(raw.correctCount);
+        const unsureCount = toNonNegativeInt(raw.unsureCount);
+        const wrongCount = toNonNegativeInt(raw.wrongCount);
+        const totalCount = toNonNegativeInt(raw.totalCount);
+
+        return {
+          number: number,
+          status: status,
+          correctCount: correctCount,
+          unsureCount: unsureCount,
+          wrongCount: wrongCount,
+          starred: Boolean(raw.starred),
+          updatedAt: typeof raw.updatedAt === "string" ? raw.updatedAt : null,
+          starUpdatedAt: typeof raw.starUpdatedAt === "string" ? raw.starUpdatedAt : null,
+          totalCount: totalCount
+        };
+      }
+
+      function toNonNegativeInt(value) {
+        const number = Number(value);
+        if (!Number.isFinite(number) || number < 0) return 0;
+        return Math.floor(number);
+      }
+
+      function getDefaultRecord(number) {
+        return {
+          number: number,
+          status: "none",
+          correctCount: 0,
+          unsureCount: 0,
+          wrongCount: 0,
+          starred: false,
+          updatedAt: null,
+          starUpdatedAt: null,
+          totalCount: 0
+        };
+      }
+
+      function getRecord(number) {
+        return records[number] || getDefaultRecord(number);
+      }
+
+      function ensureRecord(number) {
+        if (!records[number]) {
+          records[number] = getDefaultRecord(number);
+        }
+        return records[number];
+      }
+
+      function isValidNumber(number) {
+        return Number.isInteger(number) && number >= 1 && number <= TOTAL_QUESTIONS;
+      }
+
+      function uniqueValidNumbers(numbers) {
+        const seen = new Set();
+        const result = [];
+
+        numbers.forEach(function (value) {
+          const number = Number(value);
+          if (!isValidNumber(number) || seen.has(number)) return;
+          seen.add(number);
+          result.push(number);
+        });
+
+        return result;
+      }
+
+      function sortNumbersAsc(numbers) {
+        return numbers.slice().sort(function (a, b) {
+          return a - b;
+        });
+      }
+
+      function getRange() {
+        const start = Number(dom.startNumber.value);
+        const end = Number(dom.endNumber.value);
+
+        if (!isValidNumber(start) || !isValidNumber(end)) {
+          throw new Error("Range must be integers from 1 to 1596.");
+        }
+
+        if (start > end) {
+          throw new Error("Start must be less than or equal to End.");
+        }
+
+        return {
+          start: start,
+          end: end
+        };
+      }
+
+      function getRequestedCount() {
+        const preset = dom.countPreset.value;
+        const raw = preset === "custom" ? dom.customCount.value : preset;
+        const count = Number(raw);
+
+        if (!Number.isInteger(count) || count < 1) {
+          throw new Error("Count must be a positive integer.");
+        }
+
+        return count;
+      }
+
+      function getCandidates(mode, start, end) {
+        const candidates = [];
+
+        for (let number = start; number <= end; number += 1) {
+          const record = getRecord(number);
+
+          if (mode === "all") {
+            candidates.push(number);
+          } else if (mode === "unattempted" && isUnattempted(record)) {
+            candidates.push(number);
+          } else if (mode === "wrong" && record.status === "wrong") {
+            candidates.push(number);
+          } else if (mode === "unsure" && record.status === "unsure") {
+            candidates.push(number);
+          } else if (mode === "wrongOrUnsure" && (record.status === "wrong" || record.status === "unsure")) {
+            candidates.push(number);
+          } else if (mode === "starred" && record.starred) {
+            candidates.push(number);
+          } else if (mode === "excludeMaster" && !isMaster(record)) {
+            candidates.push(number);
+          }
+        }
+
+        return candidates;
+      }
+
+      function isUnattempted(record) {
+        return record.totalCount === 0 && record.status === "none";
+      }
+
+      function isMaster(record) {
+        return record.correctCount >= 3 && record.status === "correct";
+      }
+
+      function drawFromCandidates(candidates, requestedCount, mode, shouldShuffle) {
+        const shuffle = shouldShuffle !== false;
+
+        if (candidates.length === 0) {
+          throw new Error("No matching questions.");
+        }
+
+        const pool = shuffle ? shuffled(candidates) : candidates.slice();
+        const selected = pool.slice(0, requestedCount);
+
+        currentSet = sortNumbersAsc(selected);
+        currentSetInfo = {
+          mode: MODE_LABELS[mode] || mode,
+          createdAt: new Date().toISOString(),
+          range: getRange()
+        };
+        pendingMarks = {};
+        lastResult = null;
+
+        saveCurrentSet();
+        saveCurrentSetInfo();
+        savePendingMarks();
+        saveLastResult();
+        renderCurrentSet();
+        renderLastResult();
+
+        if (selected.length < requestedCount) {
+          showToast("Only " + selected.length + " matching. All selected.");
+        } else {
+          showToast(selected.length + " selected");
+        }
+      }
+
+      function shuffled(array) {
+        const copy = array.slice();
+
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const temp = copy[i];
+          copy[i] = copy[j];
+          copy[j] = temp;
+        }
+
+        return copy;
+      }
+
+      function getWeaknessCandidates(start, end) {
+        const candidates = [];
+
+        for (let number = start; number <= end; number += 1) {
+          const record = getRecord(number);
+          const weaknessScore = record.wrongCount * 1000 + record.unsureCount * 10 + record.totalCount;
+
+          if (record.wrongCount > 0 || record.unsureCount > 0) {
+            candidates.push({
+              number: number,
+              score: weaknessScore,
+              wrongCount: record.wrongCount,
+              unsureCount: record.unsureCount,
+              totalCount: record.totalCount
+            });
+          }
+        }
+
+        candidates.sort(function (a, b) {
+          return b.score - a.score || a.number - b.number;
+        });
+
+        return candidates.map(function (item) {
+          return item.number;
+        });
+      }
+
+      function getUnattemptedPrioritySet(start, end, count) {
+        const unattempted = [];
+        const others = [];
+
+        for (let number = start; number <= end; number += 1) {
+          const record = getRecord(number);
+          if (isUnattempted(record)) {
+            unattempted.push(number);
+          } else {
+            others.push(number);
+          }
+        }
+
+        return shuffled(unattempted)
+          .concat(shuffled(others))
+          .slice(0, count);
+      }
+
+      function setStatus(number, status) {
+        if (!STATUS[status] || status === "none") return;
+
+        if (pendingMarks[number] === status) {
+          delete pendingMarks[number];
+        } else {
+          pendingMarks[number] = status;
+        }
+
+        recentlyTouchedNumber = number;
+        savePendingMarks();
+        renderAfterRecordChange(number);
+      }
+
+      function applyPendingMarks() {
+        const hasCurrentSet = currentSet.length > 0;
+        const markedCount = getCurrentSetMarkedCount();
+        const missingCount = hasCurrentSet ? currentSet.length - markedCount : 0;
+
+        if (hasCurrentSet && missingCount > 0) {
+          const ok = window.confirm(
+            missingCount + " item(s) are unmarked.\n" +
+            "Unmarked items will be counted as ×. Continue?"
+          );
+          if (!ok) return;
+        }
+
+        const sourceNumbers = hasCurrentSet ? currentSet : Object.keys(pendingMarks).map(function (key) {
+          return Number(key);
+        });
+
+        const entries = sourceNumbers
+          .map(function (number) {
+            const normalizedNumber = Number(number);
+            return {
+              number: normalizedNumber,
+              status: hasCurrentSet ? (pendingMarks[normalizedNumber] || "wrong") : pendingMarks[normalizedNumber]
+            };
+          })
+          .filter(function (item) {
+            return isValidNumber(item.number) && item.status !== "none" && STATUS[item.status];
+          });
+
+        if (!entries.length) {
+          showToast("Nothing to check.", true);
+          return;
+        }
+
+        const now = new Date().toISOString();
+
+        entries.forEach(function (item) {
+          const record = ensureRecord(item.number);
+          record.status = item.status;
+          record.totalCount += 1;
+          record.updatedAt = now;
+
+          if (item.status === "correct") {
+            record.correctCount += 1;
+          } else if (item.status === "unsure") {
+            record.unsureCount += 1;
+          } else if (item.status === "wrong") {
+            record.wrongCount += 1;
+          }
+        });
+
+        const resultId = makeResultId(now);
+        lastResult = buildCheckResult(entries, now, resultId);
+        addResultEvent(lastResult, entries);
+        saveRecords();
+        saveLastResult();
+        saveResultHistory();
+        playCompletionAnimation(entries.length);
+
+        if (githubSettings.autoPush) {
+          pushToGitHub(true);
+        }
+      }
+
+      function makeResultId(createdAt) {
+        return "result-" + createdAt.replace(/[^0-9]/g, "") + "-" + Math.random().toString(36).slice(2, 9);
+      }
+
+      function addResultEvent(result, entries) {
+        if (!result || !result.id) return;
+        resultHistory.push({
+          id: result.id,
+          createdAt: result.createdAt,
+          total: result.total,
+          correct: result.correct,
+          unsure: result.unsure,
+          wrong: result.wrong,
+          accuracy: result.accuracy,
+          entries: entries.map(function (item) {
+            return { number: item.number, status: item.status };
+          })
+        });
+        resultHistory = sanitizeResultHistory(resultHistory);
+      }
+
+      function buildCheckResult(entries, createdAt, resultId) {
+        const summary = {
+          id: resultId || makeResultId(createdAt),
+          createdAt: createdAt,
+          total: entries.length,
+          correct: 0,
+          unsure: 0,
+          wrong: 0,
+          accuracy: 0,
+          topMistakeChapter: null,
+          mistakeChapters: []
+        };
+
+        const mistakeMap = {};
+
+        entries.forEach(function (item) {
+          if (item.status === "correct") {
+            summary.correct += 1;
+            return;
+          }
+
+          if (item.status === "unsure") {
+            summary.unsure += 1;
+          } else if (item.status === "wrong") {
+            summary.wrong += 1;
+          }
+
+          const chapter = getChapter(item.number);
+          const chapterKey = chapter ? getChapterValue(chapter) : "unknown";
+          const label = chapter ? getChapterLabel(item.number) : "Uncategorized";
+
+          if (!mistakeMap[chapterKey]) {
+            mistakeMap[chapterKey] = { label: label, total: 0, unsure: 0, wrong: 0 };
+          }
+
+          mistakeMap[chapterKey].total += 1;
+          if (item.status === "unsure") {
+            mistakeMap[chapterKey].unsure += 1;
+          } else if (item.status === "wrong") {
+            mistakeMap[chapterKey].wrong += 1;
+          }
+        });
+
+        summary.accuracy = summary.total > 0 ? Math.round((summary.correct / summary.total) * 1000) / 10 : 0;
+        summary.mistakeChapters = Object.keys(mistakeMap)
+          .map(function (key) { return mistakeMap[key]; })
+          .sort(function (a, b) {
+            return b.total - a.total || b.wrong - a.wrong || b.unsure - a.unsure || a.label.localeCompare(b.label, "ja");
+          });
+        summary.topMistakeChapter = summary.mistakeChapters[0] || null;
+        return summary;
+      }
+
+      function playCompletionAnimation(entryCount) {
+        dom.checkButton.classList.add("check-flash");
+        dom.checkButton.disabled = true;
+        dom.checkButton.classList.remove("check-ready");
+
+        const cards = Array.from(dom.currentSetCards.querySelectorAll(".card"));
+        cards.forEach(function (card, index) {
+          const delay = Math.min(index, 28) * 12;
+          card.style.setProperty("--exit-delay", delay + "ms");
+          addSparkles(card, delay);
+          window.setTimeout(function () { card.classList.add("finish-burst"); }, 20);
+        });
+
+        const wait = cards.length ? 980 + Math.min(cards.length, 28) * 12 : 420;
+        window.setTimeout(function () {
+          pendingMarks = {};
+          currentSet = [];
+          currentSetInfo = { mode: "Checked", createdAt: null, range: null };
+
+          savePendingMarks();
+          saveCurrentSet();
+          saveCurrentSetInfo();
+          renderAll();
+          showToast(entryCount + " checked");
+        }, wait);
+      }
+
+      function addSparkles(card, delay) {
+        const positions = [
+          { left: "18%", top: "24%" },
+          { left: "76%", top: "30%" },
+          { left: "54%", top: "76%" }
+        ];
+
+        positions.forEach(function (position, index) {
+          const spark = document.createElement("span");
+          spark.className = "sparkle";
+          spark.style.left = position.left;
+          spark.style.top = position.top;
+          spark.style.setProperty("--sparkle-delay", delay + index * 38 + "ms");
+          card.appendChild(spark);
+        });
+      }
+
+      function getPendingCount() {
+        return Object.keys(pendingMarks).filter(function (key) {
+          const number = Number(key);
+          return isValidNumber(number) && STATUS[pendingMarks[key]];
+        }).length;
+      }
+
+      function getCurrentSetMarkedCount() {
+        return currentSet.filter(function (number) {
+          return isValidNumber(number) && STATUS[pendingMarks[number]];
+        }).length;
+      }
+
+      function isCurrentSetComplete() {
+        return currentSet.length > 0 && getCurrentSetMarkedCount() === currentSet.length;
+      }
+
+      function updateCheckButtonState() {
+        const ready = isCurrentSetComplete();
+        const hasWork = currentSet.length > 0 || getPendingCount() > 0;
+        dom.checkButton.disabled = false;
+        dom.checkButton.classList.toggle("check-ready", ready);
+        dom.checkButton.classList.toggle("check-incomplete", hasWork && !ready);
+        dom.checkButton.title = ready
+          ? "Check current marks"
+          : "Unmarked items count as × after confirmation";
+        updateSetProgress();
+      }
+
+
+
+      function updateSetProgress() {
+        if (!dom.currentSetPanel) return;
+
+        const total = currentSet.length;
+        const marked = getCurrentSetMarkedCount();
+        const ratio = total ? marked / total : 0;
+        const progress = Math.max(0, Math.min(100, Math.round(ratio * 1000) / 10));
+        const opacity = total ? Math.max(0.24, Math.min(0.98, ratio * 0.74 + 0.24)) : 0;
+
+        dom.currentSetPanel.style.setProperty("--set-progress", progress + "%");
+        dom.currentSetPanel.style.setProperty("--soda-opacity", String(opacity));
+        dom.currentSetPanel.classList.toggle("soda-full", total > 0 && marked === total);
+      }
+
+      function toggleStar(number) {
+        const record = ensureRecord(number);
+        record.starred = !record.starred;
+        const now = new Date().toISOString();
+        record.updatedAt = now;
+        record.starUpdatedAt = now;
+
+        saveRecords();
+        renderAfterRecordChange(number);
+        showToast("#" + number + " star " + (record.starred ? "on" : "off"));
+      }
+
+      function renderAfterRecordChange(number) {
+        renderStats();
+        renderCurrentSet();
+        renderWeaknessLists();
+
+        const searched = Number(dom.searchNumber.value);
+        if (searched === number) {
+          renderSearchResult();
+        }
+
+        recentlyTouchedNumber = null;
+      }
+
+      function renderAll() {
+        renderStats();
+        renderCurrentSet();
+        renderLastResult();
+        renderWeaknessLists();
+        renderSearchResult(false);
+      }
+
+      function renderStats() {
+        const stats = {
+          total: TOTAL_QUESTIONS,
+          none: 0,
+          correct: 0,
+          unsure: 0,
+          wrong: 0,
+          starred: 0,
+          master: 0
+        };
+
+        for (let number = 1; number <= TOTAL_QUESTIONS; number += 1) {
+          const record = getRecord(number);
+
+          if (isUnattempted(record)) {
+            stats.none += 1;
+          }
+
+          if (record.status === "correct") {
+            stats.correct += 1;
+          } else if (record.status === "unsure") {
+            stats.unsure += 1;
+          } else if (record.status === "wrong") {
+            stats.wrong += 1;
+          }
+
+          if (record.starred) {
+            stats.starred += 1;
+          }
+
+          if (isMaster(record)) {
+            stats.master += 1;
+          }
+        }
+
+        const items = [
+          ["Total", stats.total],
+          ["New", stats.none],
+          ["Correct", stats.correct],
+          ["Unsure", stats.unsure],
+          ["Wrong", stats.wrong],
+          ["Star", stats.starred],
+          ["Master", stats.master]
+        ];
+
+        dom.statsGrid.innerHTML = items.map(function (item) {
+          return [
+            '<div class="stat">',
+            '<div class="stat-label">' + escapeHtml(item[0]) + '</div>',
+            '<div class="stat-value">' + item[1] + '</div>',
+            '</div>'
+          ].join("");
+        }).join("");
+      }
+
+      function renderLastResult() {
+        if (!lastResult) {
+          dom.lastResultPanel.hidden = true;
+          dom.lastResultPanel.innerHTML = "";
+          return;
+        }
+
+        const total = lastResult.total || 0;
+        const correct = lastResult.correct || 0;
+        const unsure = lastResult.unsure || 0;
+        const wrong = lastResult.wrong || 0;
+        const accuracy = Number.isFinite(Number(lastResult.accuracy)) ? Number(lastResult.accuracy) : 0;
+        const top = lastResult.topMistakeChapter;
+        const topText = top
+          ? "Most missed: " + top.label + " (" + top.total + " / ×" + top.wrong + " · △" + top.unsure + ")"
+          : "No misses. Clean pass.";
+        const rank = getResultRank(accuracy);
+        const safeTotal = Math.max(1, total);
+        const correctWidth = Math.round((correct / safeTotal) * 1000) / 10;
+        const unsureWidth = Math.round((unsure / safeTotal) * 1000) / 10;
+        const wrongWidth = Math.round((wrong / safeTotal) * 1000) / 10;
+
+        const chips = (lastResult.mistakeChapters || []).slice(0, 4).map(function (item, index) {
+          return '<span class="result-chip" style="animation-delay: ' + (index * 60 + 180) + 'ms;">' + escapeHtml(item.label) + ': ' + item.total + '</span>';
+        }).join("");
+
+        dom.lastResultPanel.hidden = false;
+        dom.lastResultPanel.innerHTML = [
+          '<div class="result-card">',
+          '<div class="result-party" aria-hidden="true">' + buildConfetti() + '</div>',
+          '<p class="result-title"><span>Result</span><span class="result-rank">' + escapeHtml(rank) + '</span></p>',
+          '<div class="result-score-row">',
+          '<div class="result-score-orb"><i class="result-orb-shine" aria-hidden="true"></i><div><strong>' + accuracy + '%</strong><span>Score</span></div></div>',
+          '<p class="result-copy">' + correct + ' clear / ' + total + ' cards<small>' + escapeHtml(topText) + '</small></p>',
+          '</div>',
+          '<div class="result-meter" style="--result-width: ' + Math.max(0, Math.min(100, accuracy)) + '%;">',
+          '<div class="result-meter-top"><span>Accuracy</span><span>' + correct + '/' + total + '</span></div>',
+          '<div class="result-meter-track"><div class="result-meter-fill"></div></div>',
+          '</div>',
+          '<div class="result-blob-bars" aria-label="result graph">',
+          '<div class="blob-row"><span>Correct</span><div class="blob-track"><div class="blob-fill correct" style="--blob-width: ' + correctWidth + '%; --blob-delay: 160ms;"></div></div><strong>' + correct + '</strong></div>',
+          '<div class="blob-row"><span>Unsure</span><div class="blob-track"><div class="blob-fill unsure" style="--blob-width: ' + unsureWidth + '%; --blob-delay: 240ms;"></div></div><strong>' + unsure + '</strong></div>',
+          '<div class="blob-row"><span>Wrong</span><div class="blob-track"><div class="blob-fill wrong" style="--blob-width: ' + wrongWidth + '%; --blob-delay: 320ms;"></div></div><strong>' + wrong + '</strong></div>',
+          '</div>',
+          '<div class="result-main">',
+          '<div class="result-stat"><span>Correct</span><strong>' + correct + '/' + total + '</strong></div>',
+          '<div class="result-stat"><span>Rate</span><strong>' + accuracy + '%</strong></div>',
+          '<div class="result-stat"><span>△ / ×</span><strong>' + unsure + ' / ' + wrong + '</strong></div>',
+          '</div>',
+          chips ? '<p class="result-note">Focus map</p><div class="result-chips">' + chips + '</div>' : '<p class="result-note">Clean pass. No focus map today.</p>',
+          '</div>'
+        ].join("");
+      }
+
+      function getResultRank(accuracy) {
+        if (accuracy >= 95) return "S";
+        if (accuracy >= 85) return "A";
+        if (accuracy >= 70) return "B";
+        if (accuracy >= 50) return "C";
+        return "D";
+      }
+
+      function buildConfetti() {
+        const pieces = [
+          [8, "dark", 0, 2.7, 8, 2], [18, "mid", 80, 2.4, 6, 999], [29, "light", 150, 2.9, 9, 3],
+          [41, "dark", 230, 2.3, 5, 999], [53, "mid", 310, 2.8, 7, 2], [66, "light", 390, 2.5, 8, 999],
+          [78, "dark", 470, 2.7, 6, 3], [91, "mid", 550, 2.35, 9, 2], [13, "light", 620, 2.8, 5, 999],
+          [37, "dark", 700, 2.55, 8, 2], [59, "mid", 760, 2.9, 6, 999], [84, "light", 840, 2.45, 7, 3]
+        ];
+
+        return pieces.map(function (piece) {
+          return '<span class="confetti ' + piece[1] + '" style="--x: ' + piece[0] + '%; --delay: ' + piece[2] + 'ms; --d: ' + piece[3] + 's; --s: ' + piece[4] + 'px; --r: ' + piece[5] + 'px;"></span>';
+        }).join("");
+      }
+
+      function renderCurrentSet() {
+        const markedCount = getCurrentSetMarkedCount();
+        dom.setCountPill.textContent = currentSet.length + " items";
+        dom.setModePill.textContent = currentSetInfo.mode || "No Set";
+        dom.pendingCountPill.textContent = currentSet.length
+          ? "Marked " + markedCount + "/" + currentSet.length
+          : "Marked 0/0";
+        updateCheckButtonState();
+
+        if (!currentSet.length) {
+          dom.currentSetCards.innerHTML = '<div class="empty">No set yet. Choose conditions, then press Random.</div>';
+          updateSetProgress();
+          return;
+        }
+
+        const progressText = '<div class="set-progress-note">Soda charge ' + markedCount + '/' + currentSet.length + '</div>';
+        dom.currentSetCards.innerHTML = progressText + '<div class="cards-grid set-cards-grid">' + currentSet.map(renderCard).join("") + '</div>';
+        bindCardButtons(dom.currentSetCards);
+      }
+
+      function renderCard(number, index) {
+        const record = getRecord(number);
+        const savedStatus = STATUS[record.status] || STATUS.none;
+        const pendingStatusKey = pendingMarks[number];
+        const pendingStatus = STATUS[pendingStatusKey] || null;
+        const visualStatus = pendingStatus || savedStatus;
+        const master = isMaster(record);
+        const chapterLabel = getChapterLabel(number);
+        const updated = record.updatedAt ? formatDateTime(record.updatedAt) : "never";
+
+        const cardIndex = Number.isInteger(index) ? index : 0;
+
+        const touchClass = recentlyTouchedNumber === number ? " just-touched" : "";
+
+        return [
+          '<article class="card ' + visualStatus.className + (pendingStatus ? " has-pending" : "") + touchClass + (record.starred ? " is-starred" : "") + (master && !pendingStatus ? " is-master" : "") + '" data-number="' + number + '" style="--exit-delay: ' + Math.min(cardIndex, 28) * 12 + 'ms;">',
+          '<div class="card-top">',
+          '<div class="number">' + number + '</div>',
+          '</div>',
+          '<div class="chapter-tag" title="' + escapeHtml(chapterLabel) + '">' + escapeHtml(chapterLabel) + '</div>',
+          '<div class="counts" aria-label="counts">',
+          '<span class="count-chip">○ ' + record.correctCount + '</span>',
+          '<span class="count-chip">△ ' + record.unsureCount + '</span>',
+          '<span class="count-chip">× ' + record.wrongCount + '</span>',
+          '<span class="count-chip">T ' + record.totalCount + '</span>',
+          '</div>',
+          '<div class="status-buttons">',
+          '<button class="status-btn ' + (pendingStatusKey === "correct" ? "active" : "") + '" type="button" data-action="status" data-status="correct" aria-label="' + number + ' select correct">○</button>',
+          '<button class="status-btn ' + (pendingStatusKey === "unsure" ? "active" : "") + '" type="button" data-action="status" data-status="unsure" aria-label="' + number + ' select unsure">△</button>',
+          '<button class="status-btn ' + (pendingStatusKey === "wrong" ? "active" : "") + '" type="button" data-action="status" data-status="wrong" aria-label="' + number + ' select wrong">×</button>',
+          '<button class="status-btn star ' + (record.starred ? "active" : "") + '" type="button" data-action="star" aria-label="' + number + ' toggle star">' + (record.starred ? "★" : "☆") + '</button>',
+          '</div>',
+          '<div class="card-foot">' + escapeHtml(updated) + '</div>',
+          '</article>'
+        ].join("");
+      }
+
+      function bindCardButtons(root) {
+        const buttons = root.querySelectorAll("button[data-action]");
+
+        buttons.forEach(function (button) {
+          button.addEventListener("click", function () {
+            const card = button.closest("[data-number]");
+            if (!card) return;
+
+            const number = Number(card.getAttribute("data-number"));
+            if (!isValidNumber(number)) return;
+
+            const action = button.getAttribute("data-action");
+
+            if (action === "status") {
+              setStatus(number, button.getAttribute("data-status"));
+            } else if (action === "star") {
+              toggleStar(number);
+            }
+          });
+        });
+      }
+
+      function renderSearchResult(shouldShowError) {
+        if (shouldShowError === undefined) {
+          shouldShowError = true;
+        }
+
+        const raw = dom.searchNumber.value.trim();
+        if (!raw) {
+          dom.searchResult.innerHTML = "";
+          return;
+        }
+
+        const number = Number(raw);
+        if (!isValidNumber(number)) {
+          dom.searchResult.innerHTML = "";
+          if (shouldShowError) showToast("Search number must be 1-1596.", true);
+          return;
+        }
+
+        dom.searchResult.innerHTML = '<div class="cards-grid" style="grid-template-columns: 1fr;">' + renderCard(number) + '</div>';
+        bindCardButtons(dom.searchResult);
+      }
+
+      function renderWeaknessLists() {
+        renderWeaknessList(dom.wrongList, "wrongCount", "×");
+        renderWeaknessList(dom.unsureList, "unsureCount", "△");
+      }
+
+      function renderWeaknessList(container, countKey, symbol) {
+        const items = [];
+
+        for (let number = 1; number <= TOTAL_QUESTIONS; number += 1) {
+          const record = getRecord(number);
+          const count = record[countKey];
+
+          if (count > 0) {
+            items.push({
+              number: number,
+              count: count,
+              record: record
+            });
+          }
+        }
+
+        items.sort(function (a, b) {
+          return b.count - a.count || b.record.totalCount - a.record.totalCount || a.number - b.number;
+        });
+
+        const top = items.slice(0, 30);
+
+        if (!top.length) {
+          container.innerHTML = '<div class="empty" style="margin-top: 0; padding: 18px;">No records.</div>';
+          return;
+        }
+
+        container.innerHTML = top.map(function (item) {
+          const record = item.record;
+          const status = STATUS[record.status] || STATUS.none;
+          return [
+            '<div class="weak-item">',
+            '<div><strong>#' + item.number + '</strong> <span class="hint">' + symbol + ' ' + item.count + ' / now ' + status.symbol + '</span><br><span class="hint">' + escapeHtml(getChapterLabel(item.number)) + '</span></div>',
+            '<button class="btn small" type="button" data-weak-number="' + item.number + '">Show</button>',
+            '</div>'
+          ].join("");
+        }).join("");
+
+        container.querySelectorAll("[data-weak-number]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            dom.searchNumber.value = button.getAttribute("data-weak-number");
+            renderSearchResult();
+            dom.searchNumber.scrollIntoView({ behavior: "smooth", block: "center" });
+          });
+        });
+      }
+
+      function exportJson() {
+        const payload = {
+          app: "Blank Trainer",
+          version: 1,
+          totalQuestions: TOTAL_QUESTIONS,
+          exportedAt: new Date().toISOString(),
+          chapterTags: CHAPTERS,
+          records: records,
+          pendingMarks: pendingMarks,
+          lastResult: lastResult,
+          resultHistory: resultHistory,
+          syncBaselineRecords: syncBaselineRecords,
+          currentSet: currentSet,
+          currentSetInfo: currentSetInfo
+        };
+
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {
+          type: "application/json"
+        });
+
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        const date = new Date().toISOString().slice(0, 10);
+
+        anchor.href = url;
+        anchor.download = "blank-trainer-" + date + ".json";
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+
+        URL.revokeObjectURL(url);
+        showToast("JSON exported");
+      }
+
+      function importJson(event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function () {
+          try {
+            const parsed = JSON.parse(String(reader.result || "{}"));
+            const importedRecords = parsed.records ? parsed.records : parsed;
+            const importedCurrentSet = Array.isArray(parsed.currentSet) ? parsed.currentSet : [];
+            const importedSetInfo = parsed.currentSetInfo && typeof parsed.currentSetInfo === "object"
+              ? parsed.currentSetInfo
+              : {
+                mode: "Imported",
+                createdAt: null,
+                range: null
+              };
+            const importedPendingMarks = parsed.pendingMarks && typeof parsed.pendingMarks === "object"
+              ? parsed.pendingMarks
+              : {};
+            const importedLastResult = parsed.lastResult && typeof parsed.lastResult === "object"
+              ? parsed.lastResult
+              : null;
+            const importedResultHistory = Array.isArray(parsed.resultHistory) ? parsed.resultHistory : [];
+            const importedBaseline = parsed.syncBaselineRecords && typeof parsed.syncBaselineRecords === "object"
+              ? parsed.syncBaselineRecords
+              : importedRecords;
+
+            records = sanitizeRecords(importedRecords);
+            currentSet = sortNumbersAsc(uniqueValidNumbers(importedCurrentSet));
+            currentSetInfo = {
+              mode: typeof importedSetInfo.mode === "string" ? importedSetInfo.mode : "Imported",
+              createdAt: typeof importedSetInfo.createdAt === "string" ? importedSetInfo.createdAt : null,
+              range: importedSetInfo.range &&
+                Number.isInteger(importedSetInfo.range.start) &&
+                Number.isInteger(importedSetInfo.range.end)
+                ? importedSetInfo.range
+                : null
+            };
+            pendingMarks = sanitizePendingMarks(importedPendingMarks);
+            lastResult = importedLastResult;
+            resultHistory = sanitizeResultHistory(importedResultHistory);
+            syncBaselineRecords = sanitizeRecords(importedBaseline);
+
+            saveRecords();
+            saveCurrentSet();
+            saveCurrentSetInfo();
+            savePendingMarks();
+            saveLastResult();
+            saveResultHistory();
+            saveSyncBaselineRecords();
+            renderAll();
+            showToast("JSON imported");
+          } catch (error) {
+            showToast("Import failed. Check the JSON format.", true);
+          } finally {
+            dom.importFile.value = "";
+          }
+        };
+
+        reader.onerror = function () {
+          dom.importFile.value = "";
+          showToast("File could not be read.", true);
+        };
+
+        reader.readAsText(file);
+      }
+
+
+      function getGithubSettingsFromForm(requireToken) {
+        const settings = {
+          owner: dom.githubOwner.value.trim(),
+          repo: dom.githubRepo.value.trim(),
+          branch: dom.githubBranch.value.trim() || "main",
+          path: dom.githubPath.value.trim() || "data/blank-trainer-save.json",
+          token: dom.githubToken.value.trim(),
+          rememberToken: dom.githubRememberToken.checked,
+          autoPush: dom.githubAutoPush.checked
+        };
+
+        if ((settings.owner || settings.repo || requireToken) && (!settings.owner || !settings.repo)) {
+          throw new Error("Owner and Repo are required.");
+        }
+        if (requireToken && !settings.token) {
+          throw new Error("Token is required for GitHub sync.");
+        }
+        return settings;
+      }
+
+      function renderGithubSyncStatus(message, isError, isLoading) {
+        if (!dom.githubSyncStatus) return;
+        dom.githubSyncStatus.textContent = message;
+        dom.githubSyncStatus.classList.toggle("error", Boolean(isError));
+        dom.githubSyncStatus.classList.toggle("ok", Boolean(!isError && message && message !== "Not configured."));
+        dom.githubSyncStatus.classList.toggle("loading", Boolean(isLoading));
+      }
+
+      async function pullFromGitHub(quiet) {
+        try {
+          const settings = getGithubSettingsFromForm(true);
+          saveGithubSettings(settings);
+          renderGithubSyncStatus("Pulling from GitHub...", false, true);
+          const remote = await fetchGithubFile(settings, false);
+          if (!remote || !remote.data) {
+            throw new Error("Save file was not found on GitHub.");
+          }
+          mergeRemoteData(remote.data);
+          saveAllLocalData();
+          renderAll();
+          renderGithubSyncStatus("Pulled and merged: " + relativeTime(new Date().toISOString()), false, false);
+          if (!quiet) showToast("GitHub pulled");
+        } catch (error) {
+          renderGithubSyncStatus(error.message, true, false);
+          if (!quiet) showToast(error.message, true);
+        }
+      }
+
+      async function pushToGitHub(quiet) {
+        try {
+          const settings = getGithubSettingsFromForm(true);
+          saveGithubSettings(settings);
+          renderGithubSyncStatus("Pushing to GitHub...", false, true);
+          let remote = await fetchGithubFile(settings, true);
+          if (remote && remote.data) {
+            mergeRemoteData(remote.data);
+            saveAllLocalData();
+            renderAll();
+          }
+
+          const payload = buildGithubSavePayload();
+          try {
+            await putGithubFile(settings, payload, remote ? remote.sha : null);
+          } catch (error) {
+            if (error && (error.status === 409 || error.status === 422)) {
+              remote = await fetchGithubFile(settings, true);
+              if (remote && remote.data) {
+                mergeRemoteData(remote.data);
+                saveAllLocalData();
+                renderAll();
+              }
+              await putGithubFile(settings, buildGithubSavePayload(), remote ? remote.sha : null);
+            } else {
+              throw error;
+            }
+          }
+
+          renderGithubSyncStatus("Pushed: " + relativeTime(new Date().toISOString()), false, false);
+          if (!quiet) showToast("GitHub pushed");
+        } catch (error) {
+          renderGithubSyncStatus(error.message, true, false);
+          if (!quiet) showToast(error.message, true);
+        }
+      }
+
+      async function fetchGithubFile(settings, allowMissing) {
+        const url = "https://api.github.com/repos/" + encodeURIComponent(settings.owner) + "/" + encodeURIComponent(settings.repo) + "/contents/" + encodePath(settings.path) + "?ref=" + encodeURIComponent(settings.branch);
+        const response = await fetch(url, {
+          method: "GET",
+          headers: githubHeaders(settings.token)
+        });
+
+        if (response.status === 404 && allowMissing) return null;
+        if (!response.ok) {
+          throw makeHttpError(response, "GitHub fetch failed");
+        }
+
+        const json = await response.json();
+        const content = typeof json.content === "string" ? json.content : "";
+        const decoded = content ? decodeBase64(content) : "{}";
+        return {
+          sha: json.sha || null,
+          data: JSON.parse(decoded)
+        };
+      }
+
+      async function putGithubFile(settings, payload, sha) {
+        const url = "https://api.github.com/repos/" + encodeURIComponent(settings.owner) + "/" + encodeURIComponent(settings.repo) + "/contents/" + encodePath(settings.path);
+        const body = {
+          message: "Save Blank Trainer data",
+          branch: settings.branch,
+          content: encodeBase64(JSON.stringify(payload, null, 2))
+        };
+        if (sha) body.sha = sha;
+
+        const response = await fetch(url, {
+          method: "PUT",
+          headers: githubHeaders(settings.token),
+          body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+          throw makeHttpError(response, "GitHub push failed");
+        }
+        return response.json();
+      }
+
+      function githubHeaders(token) {
+        return {
+          "Accept": "application/vnd.github+json",
+          "Authorization": "Bearer " + token,
+          "X-GitHub-Api-Version": "2022-11-28",
+          "Content-Type": "application/json"
+        };
+      }
+
+      function makeHttpError(response, fallback) {
+        const error = new Error(fallback + " (" + response.status + ")");
+        error.status = response.status;
+        return error;
+      }
+
+      function encodePath(path) {
+        return path.split("/").map(encodeURIComponent).join("/");
+      }
+
+      function buildGithubSavePayload() {
+        return {
+          app: "Blank Trainer",
+          version: 2,
+          syncMode: "result-log-merge",
+          totalQuestions: TOTAL_QUESTIONS,
+          updatedAt: new Date().toISOString(),
+          chapterTags: CHAPTERS,
+          records: records,
+          resultHistory: sanitizeResultHistory(resultHistory),
+          syncBaselineRecords: syncBaselineRecords || {},
+          lastResult: lastResult
+        };
+      }
+
+      function mergeRemoteData(remoteData) {
+        if (!remoteData || typeof remoteData !== "object") return;
+
+        const remoteRecords = sanitizeRecords(remoteData.records || {});
+        const remoteBaseline = sanitizeRecords(remoteData.syncBaselineRecords || remoteData.records || {});
+        const remoteHistory = sanitizeResultHistory(remoteData.resultHistory || []);
+        const localBaseline = sanitizeRecords(syncBaselineRecords || records || {});
+
+        const mergedBaseline = mergeRecordMaps(localBaseline, remoteBaseline);
+        const mergedHistory = mergeResultHistories(resultHistory, remoteHistory);
+        const rebuilt = applyHistoryToRecords(mergedBaseline, mergedHistory);
+        mergeStarState(rebuilt, records, remoteRecords, mergedBaseline);
+
+        records = rebuilt;
+        syncBaselineRecords = mergedBaseline;
+        resultHistory = mergedHistory;
+        lastResult = chooseLatestResult(lastResult, remoteData.lastResult);
+      }
+
+      function mergeResultHistories(localHistory, remoteHistory) {
+        const map = new Map();
+        sanitizeResultHistory(localHistory).concat(sanitizeResultHistory(remoteHistory)).forEach(function (event) {
+          map.set(event.id, event);
+        });
+        return sanitizeResultHistory(Array.from(map.values()));
+      }
+
+      function mergeRecordMaps(localMap, remoteMap) {
+        const result = {};
+        for (let number = 1; number <= TOTAL_QUESTIONS; number += 1) {
+          const local = localMap[number];
+          const remote = remoteMap[number];
+          if (!local && !remote) continue;
+          result[number] = mergeRecord(local || getDefaultRecord(number), remote || getDefaultRecord(number), number);
+        }
+        return result;
+      }
+
+      function mergeRecord(local, remote, number) {
+        const localTime = Date.parse(local.updatedAt || "") || 0;
+        const remoteTime = Date.parse(remote.updatedAt || "") || 0;
+        const latest = remoteTime > localTime ? remote : local;
+        const correctCount = Math.max(toNonNegativeInt(local.correctCount), toNonNegativeInt(remote.correctCount));
+        const unsureCount = Math.max(toNonNegativeInt(local.unsureCount), toNonNegativeInt(remote.unsureCount));
+        const wrongCount = Math.max(toNonNegativeInt(local.wrongCount), toNonNegativeInt(remote.wrongCount));
+        return {
+          number: number,
+          status: STATUS[latest.status] ? latest.status : "none",
+          correctCount: correctCount,
+          unsureCount: unsureCount,
+          wrongCount: wrongCount,
+          starred: chooseStar(local, remote),
+          updatedAt: latest.updatedAt || null,
+          starUpdatedAt: chooseStarUpdatedAt(local, remote),
+          totalCount: Math.max(correctCount + unsureCount + wrongCount, toNonNegativeInt(local.totalCount), toNonNegativeInt(remote.totalCount))
+        };
+      }
+
+      function applyHistoryToRecords(baseline, history) {
+        const result = cloneRecords(baseline || {});
+        sanitizeResultHistory(history).forEach(function (event) {
+          const when = event.createdAt || new Date().toISOString();
+          event.entries.forEach(function (item) {
+            const record = result[item.number] || getDefaultRecord(item.number);
+            record.status = item.status;
+            record.updatedAt = when;
+            record.totalCount += 1;
+            if (item.status === "correct") record.correctCount += 1;
+            if (item.status === "unsure") record.unsureCount += 1;
+            if (item.status === "wrong") record.wrongCount += 1;
+            result[item.number] = record;
+          });
+        });
+        return sanitizeRecords(result);
+      }
+
+      function mergeStarState(target, localRecords, remoteRecords, baselineRecords) {
+        for (let number = 1; number <= TOTAL_QUESTIONS; number += 1) {
+          const candidates = [baselineRecords[number], localRecords[number], remoteRecords[number]].filter(Boolean);
+          if (!candidates.length) continue;
+          candidates.sort(function (a, b) {
+            return (Date.parse(b.starUpdatedAt || b.updatedAt || "") || 0) - (Date.parse(a.starUpdatedAt || a.updatedAt || "") || 0);
+          });
+          const chosen = candidates[0];
+          if (!target[number]) target[number] = getDefaultRecord(number);
+          if (chosen.starUpdatedAt || chosen.updatedAt) {
+            target[number].starred = Boolean(chosen.starred);
+            target[number].starUpdatedAt = chosen.starUpdatedAt || chosen.updatedAt || null;
+          } else {
+            target[number].starred = candidates.some(function (record) { return record.starred; });
+          }
+        }
+      }
+
+      function chooseStar(local, remote) {
+        const localTime = Date.parse(local.starUpdatedAt || local.updatedAt || "") || 0;
+        const remoteTime = Date.parse(remote.starUpdatedAt || remote.updatedAt || "") || 0;
+        if (localTime || remoteTime) return remoteTime > localTime ? Boolean(remote.starred) : Boolean(local.starred);
+        return Boolean(local.starred || remote.starred);
+      }
+
+      function chooseStarUpdatedAt(local, remote) {
+        const localTime = Date.parse(local.starUpdatedAt || local.updatedAt || "") || 0;
+        const remoteTime = Date.parse(remote.starUpdatedAt || remote.updatedAt || "") || 0;
+        if (!localTime && !remoteTime) return null;
+        return remoteTime > localTime ? (remote.starUpdatedAt || remote.updatedAt || null) : (local.starUpdatedAt || local.updatedAt || null);
+      }
+
+      function chooseLatestResult(localResult, remoteResult) {
+        if (!remoteResult || typeof remoteResult !== "object") return localResult || null;
+        if (!localResult || typeof localResult !== "object") return remoteResult;
+        const localTime = Date.parse(localResult.createdAt || "") || 0;
+        const remoteTime = Date.parse(remoteResult.createdAt || "") || 0;
+        return remoteTime > localTime ? remoteResult : localResult;
+      }
+
+      function saveAllLocalData() {
+        saveRecords();
+        saveLastResult();
+        saveResultHistory();
+        saveSyncBaselineRecords();
+      }
+
+      function encodeBase64(value) {
+        const bytes = new TextEncoder().encode(value);
+        let binary = "";
+        bytes.forEach(function (byte) { binary += String.fromCharCode(byte); });
+        return btoa(binary);
+      }
+
+      function decodeBase64(value) {
+        const clean = String(value || "").replace(/\s/g, "");
+        const binary = atob(clean);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i += 1) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        return new TextDecoder().decode(bytes);
+      }
+
+      function relativeTime(isoString) {
+        return formatDateTime(isoString);
+      }
+
+      function formatDateTime(isoString) {
+        const date = new Date(isoString);
+        if (Number.isNaN(date.getTime())) return "unknown";
+
+        const diffMs = Date.now() - date.getTime();
+        const absMs = Math.max(0, diffMs);
+        const seconds = Math.floor(absMs / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+        const weeks = Math.floor(days / 7);
+        const months = Math.floor(days / 30);
+        const years = Math.floor(days / 365);
+
+        if (seconds < 45) return "just now";
+        if (minutes < 60) return minutes + "m ago";
+        if (hours < 24) return hours + "h ago";
+        if (days < 7) return days + "d ago";
+        if (weeks < 5) return weeks + "w ago";
+        if (months < 12) return months + "mo ago";
+        return years + "y ago";
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function showToast(message, isError) {
+        window.clearTimeout(toastTimer);
+
+        dom.toast.textContent = message;
+        dom.toast.classList.toggle("error", Boolean(isError));
+        dom.toast.classList.add("show");
+
+        toastTimer = window.setTimeout(function () {
+          dom.toast.classList.remove("show");
+        }, 2300);
+      }
+    })();
+  </script>
+</body>
+</html>
