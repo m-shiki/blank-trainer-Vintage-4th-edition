@@ -3,7 +3,7 @@
   "version": 2,
   "syncMode": "result-log-merge",
   "totalQuestions": 1596,
-  "updatedAt": "2026-07-06T12:28:56.804Z",
+  "updatedAt": "2026-07-06T14:31:14.837Z",
   "chapterTags": [
     {
       "start": 1,
@@ -186,8 +186,495 @@
       "chapter": "30章"
     }
   ],
-  "records": {},
-  "resultHistory": [],
+  "records": {
+    "20": {
+      "number": 20,
+      "status": "correct",
+      "correctCount": 1,
+      "unsureCount": 0,
+      "wrongCount": 0,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "23": {
+      "number": 23,
+      "status": "correct",
+      "correctCount": 1,
+      "unsureCount": 0,
+      "wrongCount": 0,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "35": {
+      "number": 35,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T13:32:46.373Z",
+      "totalCount": 1
+    },
+    "81": {
+      "number": 81,
+      "status": "correct",
+      "correctCount": 1,
+      "unsureCount": 0,
+      "wrongCount": 0,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "96": {
+      "number": 96,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": true,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T13:35:07.488Z",
+      "totalCount": 1
+    },
+    "127": {
+      "number": 127,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "129": {
+      "number": 129,
+      "status": "unsure",
+      "correctCount": 0,
+      "unsureCount": 1,
+      "wrongCount": 0,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "144": {
+      "number": 144,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": true,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T13:38:17.956Z",
+      "totalCount": 1
+    },
+    "161": {
+      "number": 161,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": true,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T13:42:30.665Z",
+      "totalCount": 1
+    },
+    "174": {
+      "number": 174,
+      "status": "correct",
+      "correctCount": 1,
+      "unsureCount": 0,
+      "wrongCount": 0,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "187": {
+      "number": 187,
+      "status": "unsure",
+      "correctCount": 0,
+      "unsureCount": 1,
+      "wrongCount": 0,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "188": {
+      "number": 188,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "226": {
+      "number": 226,
+      "status": "none",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 0,
+      "starred": true,
+      "updatedAt": null,
+      "starUpdatedAt": "2026-07-06T12:44:11.869Z",
+      "totalCount": 0
+    },
+    "258": {
+      "number": 258,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "275": {
+      "number": 275,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "288": {
+      "number": 288,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "296": {
+      "number": 296,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": true,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:07:36.388Z",
+      "totalCount": 1
+    },
+    "336": {
+      "number": 336,
+      "status": "correct",
+      "correctCount": 1,
+      "unsureCount": 0,
+      "wrongCount": 0,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "347": {
+      "number": 347,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "363": {
+      "number": 363,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "381": {
+      "number": 381,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": true,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:24:14.903Z",
+      "totalCount": 1
+    },
+    "393": {
+      "number": 393,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "402": {
+      "number": 402,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": true,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:27:28.932Z",
+      "totalCount": 1
+    },
+    "438": {
+      "number": 438,
+      "status": "unsure",
+      "correctCount": 0,
+      "unsureCount": 1,
+      "wrongCount": 0,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "469": {
+      "number": 469,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "494": {
+      "number": 494,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    }
+  },
+  "resultHistory": [
+    {
+      "id": "result-20260706143114180-m62y9ip",
+      "createdAt": "2026-07-06T14:31:14.180Z",
+      "total": 25,
+      "correct": 5,
+      "unsure": 3,
+      "wrong": 17,
+      "accuracy": 20,
+      "entries": [
+        {
+          "number": 20,
+          "status": "correct"
+        },
+        {
+          "number": 23,
+          "status": "correct"
+        },
+        {
+          "number": 35,
+          "status": "wrong"
+        },
+        {
+          "number": 81,
+          "status": "correct"
+        },
+        {
+          "number": 96,
+          "status": "wrong"
+        },
+        {
+          "number": 127,
+          "status": "wrong"
+        },
+        {
+          "number": 129,
+          "status": "unsure"
+        },
+        {
+          "number": 144,
+          "status": "wrong"
+        },
+        {
+          "number": 161,
+          "status": "wrong"
+        },
+        {
+          "number": 174,
+          "status": "correct"
+        },
+        {
+          "number": 187,
+          "status": "unsure"
+        },
+        {
+          "number": 188,
+          "status": "wrong"
+        },
+        {
+          "number": 258,
+          "status": "wrong"
+        },
+        {
+          "number": 275,
+          "status": "wrong"
+        },
+        {
+          "number": 288,
+          "status": "wrong"
+        },
+        {
+          "number": 296,
+          "status": "wrong"
+        },
+        {
+          "number": 336,
+          "status": "correct"
+        },
+        {
+          "number": 347,
+          "status": "wrong"
+        },
+        {
+          "number": 363,
+          "status": "wrong"
+        },
+        {
+          "number": 381,
+          "status": "wrong"
+        },
+        {
+          "number": 393,
+          "status": "wrong"
+        },
+        {
+          "number": 402,
+          "status": "wrong"
+        },
+        {
+          "number": 438,
+          "status": "unsure"
+        },
+        {
+          "number": 469,
+          "status": "wrong"
+        },
+        {
+          "number": 494,
+          "status": "wrong"
+        }
+      ]
+    }
+  ],
   "syncBaselineRecords": {},
-  "lastResult": null
+  "lastResult": {
+    "id": "result-20260706143114180-m62y9ip",
+    "createdAt": "2026-07-06T14:31:14.180Z",
+    "total": 25,
+    "correct": 5,
+    "unsure": 3,
+    "wrong": 17,
+    "accuracy": 20,
+    "topMistakeChapter": {
+      "label": "Ch.11 比較",
+      "total": 3,
+      "unsure": 0,
+      "wrong": 3
+    },
+    "mistakeChapters": [
+      {
+        "label": "Ch.11 比較",
+        "total": 3,
+        "unsure": 0,
+        "wrong": 3
+      },
+      {
+        "label": "Ch.9 接続詞",
+        "total": 3,
+        "unsure": 0,
+        "wrong": 3
+      },
+      {
+        "label": "Ch.5 不定詞",
+        "total": 3,
+        "unsure": 1,
+        "wrong": 2
+      },
+      {
+        "label": "Ch.10 前置詞",
+        "total": 2,
+        "unsure": 0,
+        "wrong": 2
+      },
+      {
+        "label": "Ch.7 分詞",
+        "total": 2,
+        "unsure": 1,
+        "wrong": 1
+      },
+      {
+        "label": "Ch.13 疑問文",
+        "total": 1,
+        "unsure": 0,
+        "wrong": 1
+      },
+      {
+        "label": "Ch.15 語順(倒置)・省略・強調",
+        "total": 1,
+        "unsure": 0,
+        "wrong": 1
+      },
+      {
+        "label": "Ch.2 受動態",
+        "total": 1,
+        "unsure": 0,
+        "wrong": 1
+      },
+      {
+        "label": "Ch.4 仮定法",
+        "total": 1,
+        "unsure": 0,
+        "wrong": 1
+      },
+      {
+        "label": "Ch.6 動名詞",
+        "total": 1,
+        "unsure": 0,
+        "wrong": 1
+      },
+      {
+        "label": "Ch.8 関係詞",
+        "total": 1,
+        "unsure": 0,
+        "wrong": 1
+      },
+      {
+        "label": "Ch.12 主語と述語動詞の一致",
+        "total": 1,
+        "unsure": 1,
+        "wrong": 0
+      }
+    ]
+  }
 }
