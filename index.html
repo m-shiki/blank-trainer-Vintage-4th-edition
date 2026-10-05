@@ -2303,6 +2303,82 @@
     }
     @media (prefers-reduced-motion: reduce) { .set-panel.soda-full::before { animation: none !important; } }
 
+
+    /* ENKEPHALIN TERMINAL — experimental skin, UI-08 */
+    :root {
+      --bg:#101410; --panel:#191f19; --panel-soft:#222b21;
+      --text:#eeeab5; --muted:#b4b58e; --line:#596044; --line-strong:#b9b56d;
+      --black:#12170f; --accent:#c9c578; --accent-pale:#272e20;
+      --radius-lg:12px; --radius-md:8px; --radius-sm:6px;
+    }
+    body { background: radial-gradient(ellipse at 50% 0%,#293327 0%,#101410 65%); color:var(--text); }
+    .app { max-width:1440px; }
+    .hero { border-bottom:2px solid #bdb876; padding-bottom:20px; position:relative; }
+    .hero::before { content:"ENKEPHALIN / EXTRACTION TERMINAL"; display:block; color:#78d7a7; font:700 .65rem monospace; letter-spacing:.18em; margin-bottom:10px; }
+    h1 { color:#f4efb6; letter-spacing:-.045em; }
+    h1::before { content:"PE"; display:inline-grid; place-items:center; vertical-align:middle; width:42px; height:42px; margin-right:12px; border:4px solid #d94f48; border-radius:50%; background:#18daa0; color:#d44942; font:900 20px monospace; box-shadow:0 0 0 3px #ded796; }
+    .edition-subtitle { color:#b9b58a; }
+    #temporaryVersion { color:#d5e5bc !important; border-color:#607950 !important; }
+    .storage-state { background:#202e21; color:#a9e1b1; border-color:#526b43; }
+    .dot { background:#52dc94; box-shadow:0 0 8px #52dc9455; }
+    .panel { background:linear-gradient(145deg,#222b21,#171e18); border:1px solid #687052; border-top:3px solid #c9c17b; box-shadow:0 8px 24px #0004,inset 0 1px 0 #ebe6b414; border-radius:12px; }
+    .panel-title h2 { color:#ece6af; font-family:monospace; letter-spacing:.06em; text-transform:uppercase; }
+    .panel-title { border-color:#596044; }
+    .hint,.card-foot { color:#babd99; }
+    input,select { background:#101810; color:#e6ebcd; border-color:#677956; box-shadow:inset 0 2px 6px #0004; }
+    input:focus,select:focus { border-color:#66e0ab; outline-color:#66e0ab; }
+    label { color:#cecda2; }
+    .btn,.file-label,.panel-toggle { color:#eae5b3; background:#2a3425; border-color:#8e9365; box-shadow:inset 0 1px 0 #ffffff12; }
+    .btn:hover,.panel-toggle:hover,.file-label:hover { background:#35482e; color:#fff7c6; border-color:#bdcc8e; }
+    .btn.primary,.btn.soft { background:linear-gradient(180deg,#e7dfa0,#b7ae68); color:#182218; border-color:#e2d99a; }
+    .btn.primary:hover,.btn.soft:hover { background:#f1e8ae; color:#152014; }
+    .btn.danger { background:#322421; color:#edb29d; border-color:#9e6254; }
+    .btn.check-ready { background:#174a34; color:#bcffdf; border-color:#42c58d; box-shadow:0 0 12px #30d78e33; }
+    .btn.check-incomplete { background:#283324; color:#dad8ac; border-color:#79825a; }
+    .stat { background:#101810; border-color:#526044; }
+    .stat-label { color:#abb68e; }
+    .stat-value { color:#bcefc4; font-family:monospace; }
+    .pill,.count-chip,.chapter-tag { background:#293225; border-color:#626a49; color:#d2d1a2; }
+    .card,.card.status-none,.card.has-pending.status-none { background:linear-gradient(145deg,#f0e9b1,#c5bd7e); color:#17241b; border:2px solid #918c56; box-shadow:inset 0 1px 0 #fff8,0 5px 12px #0003; border-radius:12px; }
+    .card .number { color:#18271d; font-family:monospace; letter-spacing:-.06em; }
+    .card .chapter-tag,.card .count-chip { background:#d9d6a6; border-color:#a3aa7e; color:#374331; }
+    .card .card-foot { color:#546047; background:none; }
+    .card.status-correct,.card.has-pending.status-correct { color:#143227; background:#d1ecd0; border-color:#359b78; box-shadow:inset 0 0 0 1px #e9ffe9,0 0 14px #16d99a22; }
+    .card.status-correct::after { background:linear-gradient(180deg,#e5f9d9,#93dcb0); }
+    .card.status-wrong,.card.has-pending.status-wrong { background:linear-gradient(180deg,#20251d,#10160f); border-color:#b76049; color:#f2e6b7; }
+    .card.status-wrong .number { color:#f0d6a6; text-shadow:none; }
+    .status-btn,.status-btn.star { background:#f7f0c9; color:#354231; border-color:#a8aa79; }
+    .status-btn.active { background:#17503a; color:#d7ffe5; border-color:#298c62; }
+    .card.status-wrong .status-btn { background:#2e3529; color:#f1dfb6; border-color:#756d4d; }
+    .card.status-wrong .status-btn.active { background:#b05442; color:#fff0d8; border-color:#db8b68; }
+    .card.status-wrong .chapter-tag,.card.status-wrong .count-chip { background:#2e3427; color:#d9d5ac; border-color:#68694c; }
+    .card.status-wrong .card-foot { color:#a8ad8c; }
+    .set-panel::before { opacity:calc(var(--soda-opacity) * .5); }
+    .set-panel.soda-full::before { opacity:var(--soda-opacity); background-image:linear-gradient(180deg,#9df5b8,#39be86 55%,#137455); }
+    .set-panel.soda-full { border-color:#46bf84; box-shadow:0 0 24px #1dca8e2b; }
+    .set-panel.soda-full .set-header .hint { color:#ddffe4; }
+    .weak-box,.weak-item { background:#182219; border-color:#4f6346; color:#d5ddbb; }
+    .empty { color:#b2bc99; background:#162017; border-color:#4f6346; }
+    .result-card { background:linear-gradient(135deg,#eff0bd,#b0d4a4); color:#183629; border-color:#579375; box-shadow:0 10px 26px #0005; }
+    .result-title,.result-copy,.result-note,.result-stat span,.result-meter-top,.blob-row { color:#365b42; }
+    .result-rank,.result-chip { background:#244a35; color:#dcf4bf; border-color:#658865; }
+    .result-score-orb { background:radial-gradient(circle at 30% 25%,#bcffc9,#20bf8f 60%,#146e50); border:5px solid #cb6551; box-shadow:0 0 0 3px #ece1a3,0 0 24px #38d49844; color:#123d2a; }
+    .result-stat { background:#e6edc3; border-color:#85aa7e; color:#224934; }
+    .study-dock { background:linear-gradient(180deg,#e9df9f,#bdb77b); border:2px solid #807e4d; box-shadow:0 8px 28px #0008,inset 0 1px 0 #fff9; border-radius:15px; color:#193929; }
+    .dock-copy span { color:#476042; }
+    .dock-track { background:#263d30; border:2px solid #c9634c; height:18px; }
+    .dock-fill { background:linear-gradient(180deg,#aaffbd,#20d69d 55%,#0c8761); border-color:#32e4a6; box-shadow:inset 0 2px 3px #daffe9aa,0 0 10px #39dc96aa; }
+    .dock-check { background:#263c2a; color:#ecedb5; border-color:#617849; }
+    .dock-check.dock-ready { background:#145a3d; color:#d7ffcf; border-color:#40c78a; }
+    .sync-summary-title,.sync-summary-kicker { color:#ccd9ae; }
+    .sync-summary-pill,.sync-status { background:#182c21; color:#bce3bb; border-color:#50754c; }
+    .sync-advanced { color:#c6cda2; border-color:#526747; }
+    .toast { background:#d8dfa7; color:#243e2a; border:1px solid #6b8656; }
+    .feedback-particle { background:#99ffd0; border-color:#288c61; box-shadow:none; }
+    .feedback-ripple { border-color:#39d99499; }
+    .feedback-particle.feedback-wrong { background:#e0be89; border-color:#a36248; }
+    @media (max-width:560px) { h1::before { width:32px; height:32px; font-size:16px; margin-right:8px; } h1 { font-size:1.65rem; } .study-dock { gap:8px; padding:10px; } }
+
   </style>
 </head>
 <body>
@@ -2310,8 +2386,8 @@
     <header class="hero">
       <div class="hero-row">
         <div>
-          <h1>Blank Trainer <span id="temporaryVersion" style="display:inline-block; vertical-align:middle; font-size:0.65rem; font-weight:600; letter-spacing:0; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:3px 7px;">UI-07 · 2026.10.05</span></h1>
-          <p class="edition-subtitle">Vintage 4th edition</p>
+          <h1>Blank Trainer <span id="temporaryVersion" style="display:inline-block; vertical-align:middle; font-size:0.65rem; font-weight:600; letter-spacing:0; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:3px 7px;">UI-08 · 2026.10.05</span></h1>
+          <p class="edition-subtitle">Vintage 4th edition · ENKEPHALIN DIVISION</p>
         </div>
         <div class="storage-state" aria-label="storage">
           <span class="dot" aria-hidden="true"></span>
