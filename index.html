@@ -2241,6 +2241,29 @@
     .result-stat { animation-duration: .36s; }
     @media (hover: none) { .card:hover { transform: none; } .status-btn:hover { transform: none; } }
     @media (prefers-reduced-motion: reduce) { .card::after { transition: none; } }
+    .status-btn, .panel-toggle, .dock-check, .btn { -webkit-tap-highlight-color: transparent; }
+    .status-btn, .panel-toggle, .dock-check { user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+    .status-btn:focus-visible, .panel-toggle:focus-visible, .dock-check:focus-visible { outline: 2px solid #777b85; outline-offset: 3px; }
+    body.has-study-dock { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+    .study-dock[hidden] { display: none !important; }
+    .study-dock { position: fixed; z-index: 100; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: flex; align-items: center; gap: 12px; width: min(420px, calc(100% - 24px)); padding: 12px 14px; border: 1px solid #cfd0d5; border-radius: 24px; background: rgba(250,250,251,.96); box-shadow: 0 8px 30px rgba(18,19,22,.16), inset 0 1px 0 #fff; }
+    .dock-copy { flex-shrink: 0; display: grid; gap: 3px; font-variant-numeric: tabular-nums; }
+    .dock-copy strong { font-size: .9rem; }
+    .dock-copy span { font-size: .7rem; color: var(--muted); }
+    .dock-track { flex: 1; height: 14px; border-radius: 99px; overflow: hidden; background: #e7e8eb; box-shadow: inset 0 1px 3px #0001; }
+    .dock-fill { height: 100%; width: 0; border-radius: inherit; background: linear-gradient(180deg,#fff,#b9bcc4); border: 1px solid #a8abb3; transition: width 230ms cubic-bezier(.2,.8,.2,1); }
+    .dock-check { flex-shrink: 0; min-height: 42px; padding: 7px 12px; border: 1px solid #d0d2d6; border-radius: 15px; background: white; color: #202124; font-weight: 700; transition: background 180ms, color 180ms, transform 100ms; }
+    .dock-check.dock-ready { background: #202124; color: white; }
+    .dock-check:active { transform: scale(.94,1.04); }
+    .feedback-particle, .feedback-ripple { position: absolute; left: 50%; top: 50%; z-index: 4; pointer-events: none; }
+    .feedback-particle { width: 7px; height: 7px; border-radius: 50%; background: #fff; border: 1px solid #999da6; box-shadow: 0 0 6px #fff9; }
+    .feedback-particle.feedback-wrong { border-radius: 2px; background: #c9ccd3; border-color: #fff8; }
+    .feedback-ripple { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #a9adb688; }
+    .card.has-pending .number::after { content: "○"; display: inline-block; margin-left: 8px; font-size: .7em; vertical-align: middle; opacity: .75; }
+    .card.status-wrong .number::after { content: "×"; }
+    .card.status-unsure .number::after { content: "△"; }
+    .toast { bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+    @media (prefers-reduced-motion: reduce) { .dock-fill, .dock-check { transition: none; } }
   </style>
 </head>
 <body>
@@ -2248,7 +2271,7 @@
     <header class="hero">
       <div class="hero-row">
         <div>
-          <h1>Blank Trainer <span id="temporaryVersion" style="display:inline-block; vertical-align:middle; font-size:0.65rem; font-weight:600; letter-spacing:0; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:3px 7px;">UI-04 · 2026.10.05</span></h1>
+          <h1>Blank Trainer <span id="temporaryVersion" style="display:inline-block; vertical-align:middle; font-size:0.65rem; font-weight:600; letter-spacing:0; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:3px 7px;">UI-05 · 2026.10.05</span></h1>
           <p class="edition-subtitle">Vintage 4th edition</p>
         </div>
         <div class="storage-state" aria-label="storage">
@@ -2478,7 +2501,11 @@
     </div>
   </div>
 
-  <button class="paint-rescue" id="paintRescueButton" type="button" title="Refresh view without reloading">Refresh UI</button>
+  <div class="study-dock" id="studyDock" hidden aria-label="Study progress">
+    <div class="dock-copy"><strong id="dockProgress">0/0</strong><span id="dockCounts">○ 0 · × 0</span></div>
+    <div class="dock-track" aria-hidden="true"><div class="dock-fill" id="dockFill"></div></div>
+    <button class="dock-check" id="dockCheck" type="button">Check</button>
+  </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -2611,7 +2638,11 @@
         unsureList: document.getElementById("unsureList"),
         refreshWeaknessButton: document.getElementById("refreshWeaknessButton"),
         toast: document.getElementById("toast"),
-        paintRescueButton: document.getElementById("paintRescueButton")
+        studyDock: document.getElementById("studyDock"),
+        dockProgress: document.getElementById("dockProgress"),
+        dockCounts: document.getElementById("dockCounts"),
+        dockFill: document.getElementById("dockFill"),
+        dockCheck: document.getElementById("dockCheck")
       };
 
       let records = loadRecords();
@@ -2629,6 +2660,7 @@
       let toastTimer = null;
       let recentlyTouchedNumber = null;
       let checking = false;
+      let dockMarkedCount = 0;
 
       init();
 
@@ -2724,6 +2756,7 @@
         });
 
         dom.checkButton.addEventListener("click", applyPendingMarks);
+        dom.dockCheck.addEventListener("click", applyPendingMarks);
 
         dom.clearPendingButton.addEventListener("click", function () {
           const count = getPendingCount();
@@ -2821,18 +2854,9 @@
           renderWeaknessLists();
           showToast("Weakness refreshed");
         });
-        if (dom.paintRescueButton) {
-          dom.paintRescueButton.addEventListener("click", function () {
-            repaintCardsHard();
-            showToast("UI refreshed");
-          });
-        }
-
         window.addEventListener("beforeunload", saveDraftState);
         window.addEventListener("pagehide", saveDraftState);
 
-        // Manual Refresh UI is kept, but automatic full repaint on focus/visibility is disabled
-        // because it can make large 100-card sets feel heavy on mobile browsers.
 
       }
 
@@ -3623,6 +3647,7 @@
         const ready = isCurrentSetComplete();
         const hasWork = currentSet.length > 0 || getPendingCount() > 0;
         dom.checkButton.disabled = checking;
+        dom.dockCheck.disabled = checking;
         const becameReady = ready && !dom.checkButton.classList.contains("check-ready");
         dom.checkButton.classList.toggle("check-ready", ready);
         if (becameReady && dom.checkButton.animate && !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
@@ -3649,6 +3674,28 @@
         dom.currentSetPanel.style.setProperty("--set-progress", progress + "%");
         dom.currentSetPanel.style.setProperty("--soda-opacity", String(opacity));
         dom.currentSetPanel.classList.toggle("soda-full", total > 0 && marked === total);
+        dom.studyDock.hidden = total === 0;
+        if (document.body) document.body.classList.toggle("has-study-dock", total > 0);
+        const correct = currentSet.filter(function (number) { return pendingMarks[number] === "correct"; }).length;
+        const wrong = currentSet.filter(function (number) { return pendingMarks[number] === "wrong"; }).length;
+        dom.dockProgress.textContent = marked + "/" + total;
+        dom.dockCounts.textContent = "○ " + correct + " · × " + wrong;
+        dom.dockFill.style.setProperty("width", progress + "%");
+        dom.dockCheck.classList.toggle("dock-ready", total > 0 && marked === total);
+        dom.dockCheck.disabled = checking;
+        dom.dockCheck.textContent = total > 0 && marked === total ? "Check ✓" : "Check";
+        dom.dockCheck.title = total > 0 && marked === total ? "Check selected answers" : "Unmarked items count as × after confirmation";
+        if (marked > dockMarkedCount && dom.studyDock.animate && !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
+          const milestone = marked === total || marked % 5 === 0;
+          if (dom.studyDock.rewardAnimation) dom.studyDock.rewardAnimation.cancel();
+          dom.studyDock.rewardAnimation = dom.studyDock.animate([
+            { transform: "translateX(-50%) scale(1)" },
+            { transform: "translateX(-50%) scale(" + (milestone ? "1.045,.96" : "1.012,.99") + ")", offset: .4 },
+            { transform: "translateX(-50%) scale(1)" }
+          ], { duration: milestone ? 380 : 230, easing: "ease-out" });
+          burstFeedback(dom.studyDock, "correct", milestone ? 10 : 3);
+        }
+        dockMarkedCount = marked;
       }
 
       function toggleStar(number) {
@@ -3662,6 +3709,30 @@
         saveRecords();
         renderAfterRecordChange(number);
         showToast("#" + number + " star " + (record.starred ? "on" : "off"));
+      }
+
+      function burstFeedback(target, status, count) {
+        // Web Animations remove their own temporary particles, including on rapid repeated taps.
+        for (let i = 0; i < count; i += 1) {
+          const particle = document.createElement("i");
+          particle.className = "feedback-particle" + (status === "wrong" ? " feedback-wrong" : "");
+          target.appendChild(particle);
+          const angle = (i / count) * Math.PI * 2;
+          const distance = 22 + (i % 3) * 9;
+          const animation = particle.animate([
+            { transform: "translate(-50%,-50%) scale(.3)", opacity: 0 },
+            { opacity: 1, offset: .18 },
+            { transform: "translate(calc(-50% + " + Math.cos(angle) * distance + "px),calc(-50% + " + Math.sin(angle) * distance + "px)) scale(.2)", opacity: 0 }
+          ], { duration: 460, easing: "cubic-bezier(.15,.7,.3,1)" });
+          animation.onfinish = function () { particle.remove(); };
+          animation.oncancel = function () { particle.remove(); };
+        }
+        const ripple = document.createElement("i");
+        ripple.className = "feedback-ripple";
+        target.appendChild(ripple);
+        const ring = ripple.animate([{ transform: "translate(-50%,-50%) scale(.3)", opacity: .65 }, { transform: "translate(-50%,-50%) scale(1.8)", opacity: 0 }], { duration: 380, easing: "ease-out" });
+        ring.onfinish = function () { ripple.remove(); };
+        ring.oncancel = function () { ripple.remove(); };
       }
 
       function renderAfterRecordChange(number, recordChanged) {
@@ -3685,6 +3756,7 @@
               if (star) button.textContent = record.starred ? "★" : "☆";
             });
             if (recordChanged !== false) card.querySelector(".card-foot").textContent = record.updatedAt ? formatDateTime(record.updatedAt) : "never";
+            if (recordChanged === false && status !== "none" && card.animate && !reduced) burstFeedback(card, status, 5);
             if (card.animate && !reduced) {
               if (card.touchAnimation) card.touchAnimation.cancel();
               card.touchAnimation = card.animate([
@@ -4476,32 +4548,6 @@
         }
       }
 
-      function repaintCardsHard() {
-        saveDraftState();
-
-        const scrollY = window.scrollY;
-        document.body.classList.add("paint-flush");
-
-        if (typeof renderCurrentSet === "function") {
-          renderCurrentSet();
-        }
-
-        if (typeof renderLastResult === "function") {
-          renderLastResult();
-        }
-
-        if (typeof nudgePaint === "function") {
-          nudgePaint();
-        }
-
-        window.requestAnimationFrame(function () {
-          window.scrollTo({ top: scrollY, left: 0, behavior: "instant" });
-          window.setTimeout(function () {
-            document.body.classList.remove("paint-flush");
-          }, 220);
-        });
-      }
-
       function showToast(message, isError) {
         window.clearTimeout(toastTimer);
 
@@ -4517,6 +4563,7 @@
   </script>
 </body>
 </html>
+
 
 
 
