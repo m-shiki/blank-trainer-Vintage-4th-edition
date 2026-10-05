@@ -2218,6 +2218,15 @@
         animation: none !important;
       }
     }
+    .panel-toggle { margin-left: auto; flex-shrink: 0; min-height: 36px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); color: var(--muted); font-size: .75rem; cursor: pointer; }
+    .panel-title:has(> .panel-toggle) { display: flex; align-items: center; gap: 8px; }
+    .panel-title > div:has(> .panel-toggle) { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; flex: 1; }
+    .panel-title > div:has(> .panel-toggle) > .hint { flex-basis: 100%; }
+    .panel.is-collapsed > :not(.panel-title):not(.set-header) { display: none !important; }
+    .panel.is-collapsed > .set-header .hint { display: none; }
+    .panel.is-collapsed > .panel-title { margin-bottom: 0; }
+    .sync-close-label, .sync-details[open] .sync-open-label { display: none; }
+    .sync-details[open] .sync-close-label { display: inline; }
   </style>
 </head>
 <body>
@@ -2225,7 +2234,7 @@
     <header class="hero">
       <div class="hero-row">
         <div>
-          <h1>Blank Trainer <span id="temporaryVersion" style="display:inline-block; vertical-align:middle; font-size:0.65rem; font-weight:600; letter-spacing:0; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:3px 7px;">UI-02 · 2026.10.05</span></h1>
+          <h1>Blank Trainer <span id="temporaryVersion" style="display:inline-block; vertical-align:middle; font-size:0.65rem; font-weight:600; letter-spacing:0; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:3px 7px;">UI-03 · 2026.10.05</span></h1>
           <p class="edition-subtitle">Vintage 4th edition</p>
         </div>
         <div class="storage-state" aria-label="storage">
@@ -2239,7 +2248,7 @@
       <aside class="side">
         <section class="panel" aria-labelledby="controlTitle">
           <div class="panel-title">
-            <h2 id="controlTitle">Control</h2>
+            <h2 id="controlTitle">Control</h2><button class="panel-toggle" type="button" data-panel-toggle="controlTitle" aria-expanded="true">Close</button>
           </div>
 
           <div class="form-grid">
@@ -2309,14 +2318,14 @@
 
         <section class="panel" aria-labelledby="statsTitle">
           <div class="panel-title">
-            <h2 id="statsTitle">Stats</h2>
+            <h2 id="statsTitle">Stats</h2><button class="panel-toggle" type="button" data-panel-toggle="statsTitle" aria-expanded="true">Close</button>
           </div>
           <div class="stats-grid" id="statsGrid"></div>
         </section>
 
         <section class="panel" aria-labelledby="searchTitle">
           <div class="panel-title">
-            <h2 id="searchTitle">Search</h2>
+            <h2 id="searchTitle">Search</h2><button class="panel-toggle" type="button" data-panel-toggle="searchTitle" aria-expanded="true">Close</button>
           </div>
           <div class="field">
             <label for="searchNumber">Number</label>
@@ -2330,7 +2339,7 @@
 
         <section class="panel" aria-labelledby="dataTitle">
           <div class="panel-title">
-            <h2 id="dataTitle">Data</h2>
+            <h2 id="dataTitle">Data</h2><button class="panel-toggle" type="button" data-panel-toggle="dataTitle" aria-expanded="true">Close</button>
           </div>
           <div class="data-actions">
             <button class="btn soft" id="exportButton" type="button">Export JSON</button>
@@ -2349,7 +2358,7 @@
                 <span class="sync-summary-kicker">Cloud Save</span>
                 <span class="sync-summary-title" id="syncTitle">GitHub Sync</span>
               </span>
-              <span class="sync-summary-pill">Open</span>
+              <span class="sync-summary-pill"><span class="sync-open-label">Open</span><span class="sync-close-label">Close</span></span>
             </summary>
 
             <div class="sync-grid">
@@ -2403,9 +2412,9 @@
           <div class="set-header">
             <div>
               <div class="panel-title" style="margin-bottom: 6px;">
-                <h2 id="currentSetTitle">Current Set</h2>
+                <h2 id="currentSetTitle">Current Set</h2><button class="panel-toggle" type="button" data-panel-toggle="currentSetTitle" aria-expanded="true">Close</button>
               </div>
-              <p class="hint">Select ○△×, then Check. Unmarked items count as × after confirmation.</p>
+              <p class="hint">Select ○×, then Check. Unmarked items count as × after confirmation.</p>
             </div>
             <div class="set-meta">
               <span class="pill" id="setCountPill">0 items</span>
@@ -2435,7 +2444,7 @@
         <section class="panel" aria-labelledby="weaknessTitle">
           <div class="panel-title">
             <div>
-              <h2 id="weaknessTitle">Weakness</h2>
+              <h2 id="weaknessTitle">Weakness</h2><button class="panel-toggle" type="button" data-panel-toggle="weaknessTitle" aria-expanded="true">Close</button>
               <p class="hint">Sorted by × and △ counts.</p>
             </div>
             <button class="btn small" id="refreshWeaknessButton" type="button">Refresh</button>
@@ -2617,6 +2626,22 @@
       }
 
       function bindEvents() {
+        document.querySelectorAll("[data-panel-toggle]").forEach(function (button) {
+          const panel = button.closest("section.panel");
+          const key = "blankTrainer.collapsed." + button.dataset.panelToggle;
+          function setCollapsed(collapsed) {
+            panel.classList.toggle("is-collapsed", collapsed);
+            button.textContent = collapsed ? "Open" : "Close";
+            button.setAttribute("aria-expanded", String(!collapsed));
+            button.setAttribute("aria-label", (collapsed ? "Expand " : "Collapse ") + document.getElementById(button.dataset.panelToggle).textContent);
+          }
+          try { setCollapsed(localStorage.getItem(key) === "true"); } catch (error) { setCollapsed(false); }
+          button.addEventListener("click", function () {
+            const collapsed = button.getAttribute("aria-expanded") === "true";
+            setCollapsed(collapsed);
+            try { localStorage.setItem(key, String(collapsed)); } catch (error) { /* Optional preference storage. */ }
+          });
+        });
         dom.countPreset.addEventListener("change", function () {
           const isCustom = dom.countPreset.value === "custom";
           dom.customCountWrap.hidden = !isCustom;
@@ -4454,4 +4479,5 @@
   </script>
 </body>
 </html>
+
 
