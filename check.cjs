@@ -2,11 +2,11 @@ const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');
 const source=fs.readFileSync('trainer/index.html','utf8').match(/<script>([\s\S]*?)<\/script>/)[1];
 new vm.Script(source);
 const elements=new Map(), timers=[], listeners={}, saved=new Map();
-function element(){return {value:'',checked:false,disabled:false,style:{setProperty(){}},classList:{add(){},remove(){},toggle(){}},addEventListener(name,cb){this[name]=cb},querySelectorAll(){return []},querySelector(){return null},textContent:''}}
+function element(){return {value:'',checked:false,disabled:false,style:{setProperty(){}},classList:{add(){},remove(){},toggle(){},contains(){return false}},addEventListener(name,cb){this[name]=cb},querySelectorAll(){return []},querySelector(){return null},textContent:''}}
 const collapsedClasses=new Set(),collapseAttrs={};
 const collapseButton={...element(),dataset:{panelToggle:'statsTitle'},closest(){return {classList:{toggle(k,on){on?collapsedClasses.add(k):collapsedClasses.delete(k)}}}},setAttribute(k,v){collapseAttrs[k]=v},getAttribute(k){return collapseAttrs[k]}};
 const ctx={console,TextEncoder,TextDecoder,Date,Math,Set,Map,JSON,Number,String,Array,Object,localStorage:{getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v),removeItem:k=>saved.delete(k)},document:{querySelectorAll(){return [collapseButton]},getElementById(id){if(!elements.has(id))elements.set(id,element());return elements.get(id)},documentElement:element()},window:{addEventListener:(k,v)=>listeners[k]=v,setTimeout:fn=>{timers.push(fn);return timers.length},clearTimeout(){},confirm:()=>true,requestAnimationFrame(){} }};
-const exposed=source.replace('      init();',`globalThis.api={bindEvents,getChapterLabel,sanitizeResultHistory,sanitizeRecord,mergeRemoteData,applyPendingMarks,updateCheckButtonState,drawFromCandidates,fetchGithubFile,renderLastResult,
+const exposed=source.replace('      init();',`globalThis.api={bindEvents,getChapterLabel,sanitizeResultHistory,sanitizeRecord,mergeRemoteData,applyPendingMarks,updateCheckButtonState,drawFromCandidates,renderAfterRecordChange,bindCardButtons,setStatus,fetchGithubFile,renderLastResult,
 setState(s){records=s.records||{};currentSet=s.set||[];pendingMarks=s.marks||{};resultHistory=s.history||[];syncBaselineRecords=s.baseline||{};githubSettings={};lastResult=s.lastResult||null;},getState(){return {records,currentSet,pendingMarks,resultHistory}}};`);
 vm.runInNewContext(exposed,ctx);const a=ctx.api;
 a.bindEvents();collapseButton.click();assert.equal(collapseAttrs["aria-expanded"],"false");assert.equal(saved.get("blankTrainer.collapsed.statsTitle"),"true");a.bindEvents();assert.equal(collapseButton.textContent,"Open");collapseButton.click();assert.equal(collapsedClasses.has("is-collapsed"),false);assert.equal(typeof elements.get('paintRescueButton').click,'function');assert.equal(typeof listeners.pagehide,'function');assert.equal(a.getChapterLabel(1),'Ch.1 時制');
@@ -21,3 +21,10 @@ console.log('PASS: syntax, event registration, malformed history, 501-event merg
 a.setState({lastResult:{total:'<img src=x onerror=alert(1)>',correct:'<b>bad</b>',mistakeChapters:[null,{label:'<script>',total:'<img>'}]}});a.renderLastResult();assert.equal(elements.get('lastResultPanel').innerHTML.includes('<img'),false);
 ctx.fetch=async()=>({ok:false,status:401,clone:()=>({json:async()=>({message:'Bad credentials'})})});
 a.fetchGithubFile({owner:'test',repo:'test',path:'save.json',branch:'main',token:'test'},false).then(()=>assert.fail('expected rejection'),error=>{assert.equal(error.status,401);assert.match(error.message,/invalid or expired/);console.log('PASS: imported-result escaping and GitHub HTTP error reporting.');});
+
+const classes=new Set(),attrs={},foot={},starButton={classList:{toggle(){}},getAttribute:k=>k==='data-action'?'star':null,setAttribute:(k,v)=>attrs[k]=v};
+const card={classList:{toggle(k,on){on?classes.add(k):classes.delete(k)},remove(k){classes.delete(k)}},querySelectorAll:()=>[starButton],querySelector:()=>foot};
+const root=elements.get('currentSetCards');root.querySelectorAll=()=>[card];root.innerHTML='preserve-card-dom';
+a.setState({set:[1],marks:{}});a.setStatus(1,'correct');assert.equal(classes.has('status-correct'),true);assert.equal(root.innerHTML,'preserve-card-dom');assert.equal(elements.get('pendingCountPill').textContent,'Marked 1/1');a.setStatus(1,'correct');assert.equal(classes.has('status-none'),true);
+let registrations=0;const delegatedRoot={addEventListener(){registrations++}};a.bindCardButtons(delegatedRoot);a.bindCardButtons(delegatedRoot);assert.equal(registrations,1);
+console.log('PASS: in-place card update, mark/unmark progress and single delegated event registration.');
