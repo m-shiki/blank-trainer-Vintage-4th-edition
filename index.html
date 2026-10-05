@@ -2265,44 +2265,6 @@
     .toast { bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
     @media (prefers-reduced-motion: reduce) { .dock-fill, .dock-check { transition: none; } }
 
-    /* UI-07: experimental luminous green liquid. */
-    .dock-fill {
-      background: linear-gradient(180deg, #d6ff97 0%, #74ef37 45%, #279729 100%);
-      border-color: #338525;
-      box-shadow: inset 0 1px 3px #efffd7, 0 0 10px rgba(103,242,45,.55);
-    }
-    .dock-track { background: #dce6d5; }
-    .study-dock:has(.dock-ready) {
-      border-color: #73b950;
-      box-shadow: 0 8px 30px rgba(18,19,22,.16), 0 0 18px rgba(113,239,48,.28);
-    }
-    .dock-check.dock-ready { background: #19351b; border-color: #448c35; color: #dbffb5; }
-    .set-panel.soda-full {
-      border-color: #81bd62;
-      box-shadow: 0 0 22px rgba(114,239,52,.25), inset 0 0 22px rgba(124,242,64,.14);
-    }
-    .set-panel.soda-full::before {
-      background:
-        radial-gradient(circle at 12% 18%, rgba(236,255,201,.96) 0 2.3px, transparent 4.6px),
-        radial-gradient(circle at 34% 46%, rgba(206,255,149,.85) 0 1.8px, transparent 4px),
-        radial-gradient(circle at 68% 32%, rgba(237,255,205,.92) 0 2.5px, transparent 5px),
-        radial-gradient(circle at 88% 70%, rgba(196,255,128,.8) 0 1.8px, transparent 4.2px),
-        linear-gradient(180deg, #e6ffc5 0%, #b0f574 48%, #68be44 100%);
-      background-size: 150px 132px, 118px 106px, 168px 146px, 138px 122px, auto;
-      border-top-color: #96d867;
-      box-shadow: inset 0 18px 30px rgba(239,255,214,.75), inset 0 -26px 42px rgba(37,110,23,.18);
-      animation: liquidBloom 650ms ease-out both;
-    }
-    .set-panel.soda-full::after { background: radial-gradient(ellipse at 50% 100%, rgba(205,255,152,.85), transparent 70%); }
-    .set-panel.soda-full .soda-bubble { border-color: rgba(127,222,66,.75); background: rgba(227,255,190,.8); }
-    .set-panel.is-collapsed.soda-full::before, .set-panel.is-collapsed.soda-full::after { display: none; }
-    @keyframes liquidBloom {
-      0% { opacity: .35; transform: scaleY(.96); }
-      45% { opacity: 1; transform: scaleY(1); }
-      100% { opacity: var(--soda-opacity, .98); transform: scaleY(1); }
-    }
-    @media (prefers-reduced-motion: reduce) { .set-panel.soda-full::before { animation: none !important; } }
-
   </style>
 </head>
 <body>
@@ -2310,7 +2272,7 @@
     <header class="hero">
       <div class="hero-row">
         <div>
-          <h1>Blank Trainer <span id="temporaryVersion" style="display:inline-block; vertical-align:middle; font-size:0.65rem; font-weight:600; letter-spacing:0; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:3px 7px;">UI-07 · 2026.10.05</span></h1>
+          <h1>Blank Trainer <span id="temporaryVersion" style="display:inline-block; vertical-align:middle; font-size:0.65rem; font-weight:600; letter-spacing:0; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:3px 7px;">UI-09 · 2026.10.05</span></h1>
           <p class="edition-subtitle">Vintage 4th edition</p>
         </div>
         <div class="storage-state" aria-label="storage">
