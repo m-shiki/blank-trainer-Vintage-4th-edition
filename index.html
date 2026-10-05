@@ -2227,6 +2227,20 @@
     .panel.is-collapsed > .panel-title { margin-bottom: 0; }
     .sync-close-label, .sync-details[open] .sync-open-label { display: none; }
     .sync-details[open] .sync-close-label { display: inline; }
+    /* Quiet at rest; tactile feedback follows the finger. */
+    .status-btn[data-action]:active { transform: scale(.94, 1.035); transition-duration: 65ms; }
+    .status-btn.active { animation: none; }
+    .btn.check-ready { animation: none; box-shadow: 0 0 0 3px rgba(31,35,40,.08); }
+    .card::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(180deg,#f4f4f5 0%,#dedfe2 46%,#c9cbd0 100%); opacity: 0; transition: opacity 180ms ease-out; }
+    .card.status-correct, .card.has-pending.status-correct { background: #fff; }
+    .card.status-correct::after { opacity: 1; }
+    .result-card { animation-duration: .48s; }
+    .result-score-orb, .result-orb-shine { animation-iteration-count: 2; }
+    .result-meter-fill { animation-duration: .65s; }
+    .blob-fill { animation-duration: .6s; }
+    .result-stat { animation-duration: .36s; }
+    @media (hover: none) { .card:hover { transform: none; } .status-btn:hover { transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .card::after { transition: none; } }
   </style>
 </head>
 <body>
@@ -2234,7 +2248,7 @@
     <header class="hero">
       <div class="hero-row">
         <div>
-          <h1>Blank Trainer <span id="temporaryVersion" style="display:inline-block; vertical-align:middle; font-size:0.65rem; font-weight:600; letter-spacing:0; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:3px 7px;">UI-03 · 2026.10.05</span></h1>
+          <h1>Blank Trainer <span id="temporaryVersion" style="display:inline-block; vertical-align:middle; font-size:0.65rem; font-weight:600; letter-spacing:0; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:3px 7px;">UI-04 · 2026.10.05</span></h1>
           <p class="edition-subtitle">Vintage 4th edition</p>
         </div>
         <div class="storage-state" aria-label="storage">
@@ -3401,7 +3415,7 @@
 
         recentlyTouchedNumber = number;
         savePendingMarks();
-        renderAfterRecordChange(number);
+        renderAfterRecordChange(number, false);
       }
 
       function applyPendingMarks() {
@@ -3609,7 +3623,11 @@
         const ready = isCurrentSetComplete();
         const hasWork = currentSet.length > 0 || getPendingCount() > 0;
         dom.checkButton.disabled = checking;
+        const becameReady = ready && !dom.checkButton.classList.contains("check-ready");
         dom.checkButton.classList.toggle("check-ready", ready);
+        if (becameReady && dom.checkButton.animate && !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
+          dom.checkButton.animate([{ transform: "scale(1)" }, { transform: "scale(1.055)", offset: .45 }, { transform: "scale(1)" }], { duration: 300, easing: "ease-out" });
+        }
         dom.checkButton.classList.toggle("check-incomplete", hasWork && !ready);
         dom.checkButton.title = ready
           ? "Check current marks"
@@ -3646,17 +3664,44 @@
         showToast("#" + number + " star " + (record.starred ? "on" : "off"));
       }
 
-      function renderAfterRecordChange(number) {
-        renderStats();
-        renderCurrentSet();
-        renderWeaknessLists();
-        if (typeof nudgePaint === "function") nudgePaint();
-
-        const searched = Number(dom.searchNumber.value);
-        if (searched === number) {
-          renderSearchResult();
-        }
-
+      function renderAfterRecordChange(number, recordChanged) {
+        const record = getRecord(number);
+        const status = pendingMarks[number] || "none";
+        const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        [dom.currentSetCards, dom.searchResult].forEach(function (root) {
+          root.querySelectorAll('.card[data-number="' + number + '"]').forEach(function (card) {
+            ["none", "correct", "unsure", "wrong"].forEach(function (key) {
+              card.classList.toggle("status-" + key, key === status);
+            });
+            card.classList.toggle("has-pending", status !== "none");
+            card.classList.toggle("is-starred", record.starred);
+            card.classList.toggle("is-master", isMaster(record) && status === "none");
+            card.classList.remove("just-touched");
+            card.querySelectorAll("button[data-action]").forEach(function (button) {
+              const star = button.getAttribute("data-action") === "star";
+              const active = star ? record.starred : button.getAttribute("data-status") === status;
+              button.classList.toggle("active", active);
+              button.setAttribute("aria-pressed", String(active));
+              if (star) button.textContent = record.starred ? "★" : "☆";
+            });
+            if (recordChanged !== false) card.querySelector(".card-foot").textContent = record.updatedAt ? formatDateTime(record.updatedAt) : "never";
+            if (card.animate && !reduced) {
+              if (card.touchAnimation) card.touchAnimation.cancel();
+              card.touchAnimation = card.animate([
+                { transform: "scale(1)" },
+                { transform: "scale(.985,1.025)", offset: .32 },
+                { transform: "scale(1.015,.99)", offset: .65 },
+                { transform: "scale(1)" }
+              ], { duration: 230, easing: "cubic-bezier(.2,.8,.2,1)" });
+            }
+          });
+        });
+        const marked = getCurrentSetMarkedCount();
+        dom.pendingCountPill.textContent = currentSet.length ? "Marked " + marked + "/" + currentSet.length : "Marked 0/0";
+        const note = dom.currentSetCards.querySelector(".set-progress-note");
+        if (note) note.textContent = "Soda charge " + marked + "/" + currentSet.length;
+        updateCheckButtonState();
+        if (recordChanged !== false) renderStats();
         recentlyTouchedNumber = null;
       }
 
@@ -3858,24 +3903,17 @@
       }
 
       function bindCardButtons(root) {
-        const buttons = root.querySelectorAll("button[data-action]");
-
-        buttons.forEach(function (button) {
-          button.addEventListener("click", function () {
-            const card = button.closest("[data-number]");
-            if (!card) return;
-
-            const number = Number(card.getAttribute("data-number"));
-            if (!isValidNumber(number)) return;
-
-            const action = button.getAttribute("data-action");
-
-            if (action === "status") {
-              setStatus(number, button.getAttribute("data-status"));
-            } else if (action === "star") {
-              toggleStar(number);
-            }
-          });
+        if (root.cardEventsBound) return;
+        root.cardEventsBound = true;
+        root.addEventListener("click", function (event) {
+          const button = event.target.closest("button[data-action]");
+          if (!button || !root.contains(button)) return;
+          const card = button.closest("[data-number]");
+          if (!card) return;
+          const number = Number(card.getAttribute("data-number"));
+          if (!isValidNumber(number)) return;
+          if (button.getAttribute("data-action") === "status") setStatus(number, button.getAttribute("data-status"));
+          else if (button.getAttribute("data-action") === "star") toggleStar(number);
         });
       }
 
@@ -4479,5 +4517,6 @@
   </script>
 </body>
 </html>
+
 
 
