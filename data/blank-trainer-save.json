@@ -3,7 +3,7 @@
   "version": 2,
   "syncMode": "result-log-merge",
   "totalQuestions": 1596,
-  "updatedAt": "2026-10-05T08:30:20.445Z",
+  "updatedAt": "2026-10-05T08:38:53.779Z",
   "chapterTags": [
     {
       "start": 1,
@@ -286,6 +286,17 @@
       "starUpdatedAt": "2026-10-05T08:25:19.737Z",
       "totalCount": 0
     },
+    "117": {
+      "number": 117,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
     "118": {
       "number": 118,
       "status": "wrong",
@@ -396,6 +407,17 @@
       "starUpdatedAt": "2026-07-06T12:44:11.869Z",
       "totalCount": 0
     },
+    "235": {
+      "number": 235,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
     "241": {
       "number": 241,
       "status": "wrong",
@@ -423,11 +445,11 @@
       "status": "wrong",
       "correctCount": 0,
       "unsureCount": 0,
-      "wrongCount": 1,
+      "wrongCount": 2,
       "starred": false,
-      "updatedAt": "2026-07-06T14:31:14.180Z",
+      "updatedAt": "2026-10-05T08:38:53.026Z",
       "starUpdatedAt": "2026-07-06T14:31:14.180Z",
-      "totalCount": 1
+      "totalCount": 2
     },
     "284": {
       "number": 284,
@@ -460,6 +482,17 @@
       "starred": true,
       "updatedAt": "2026-07-06T14:31:14.180Z",
       "starUpdatedAt": "2026-07-06T14:07:36.388Z",
+      "totalCount": 1
+    },
+    "307": {
+      "number": 307,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:35:50.383Z",
       "totalCount": 1
     },
     "315": {
@@ -550,6 +583,17 @@
       "starUpdatedAt": "2026-10-05T08:25:02.130Z",
       "totalCount": 1
     },
+    "367": {
+      "number": 367,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
     "381": {
       "number": 381,
       "status": "wrong",
@@ -559,6 +603,17 @@
       "starred": true,
       "updatedAt": "2026-07-06T14:31:14.180Z",
       "starUpdatedAt": "2026-07-06T14:24:14.903Z",
+      "totalCount": 1
+    },
+    "382": {
+      "number": 382,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
       "totalCount": 1
     },
     "393": {
@@ -605,6 +660,17 @@
       "starUpdatedAt": "2026-07-06T14:31:14.180Z",
       "totalCount": 1
     },
+    "459": {
+      "number": 459,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
     "469": {
       "number": 469,
       "status": "wrong",
@@ -636,6 +702,28 @@
       "starred": false,
       "updatedAt": "2026-07-06T14:31:14.180Z",
       "starUpdatedAt": "2026-07-06T14:31:14.180Z",
+      "totalCount": 1
+    },
+    "495": {
+      "number": 495,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
+    "509": {
+      "number": 509,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
       "totalCount": 1
     },
     "513": {
@@ -682,6 +770,17 @@
       "starUpdatedAt": "2026-10-05T08:25:02.130Z",
       "totalCount": 1
     },
+    "578": {
+      "number": 578,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
     "598": {
       "number": 598,
       "status": "wrong",
@@ -704,6 +803,17 @@
       "starUpdatedAt": "2026-10-05T08:25:02.130Z",
       "totalCount": 1
     },
+    "658": {
+      "number": 658,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
     "683": {
       "number": 683,
       "status": "wrong",
@@ -715,6 +825,17 @@
       "starUpdatedAt": "2026-10-05T08:30:19.938Z",
       "totalCount": 1
     },
+    "703": {
+      "number": 703,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
     "706": {
       "number": 706,
       "status": "wrong",
@@ -724,6 +845,17 @@
       "starred": false,
       "updatedAt": "2026-10-05T08:30:19.938Z",
       "starUpdatedAt": "2026-10-05T08:30:19.938Z",
+      "totalCount": 1
+    },
+    "724": {
+      "number": 724,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
       "totalCount": 1
     },
     "753": {
@@ -759,6 +891,28 @@
       "starUpdatedAt": "2026-10-05T08:19:30.221Z",
       "totalCount": 1
     },
+    "819": {
+      "number": 819,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
+    "822": {
+      "number": 822,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
     "833": {
       "number": 833,
       "status": "wrong",
@@ -792,6 +946,17 @@
       "starUpdatedAt": "2026-10-05T08:25:02.130Z",
       "totalCount": 1
     },
+    "862": {
+      "number": 862,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
     "883": {
       "number": 883,
       "status": "wrong",
@@ -812,6 +977,17 @@
       "starred": false,
       "updatedAt": "2026-10-05T08:25:02.130Z",
       "starUpdatedAt": "2026-10-05T08:25:02.130Z",
+      "totalCount": 1
+    },
+    "972": {
+      "number": 972,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
       "totalCount": 1
     },
     "1022": {
@@ -847,6 +1023,17 @@
       "starUpdatedAt": "2026-10-05T08:30:19.938Z",
       "totalCount": 1
     },
+    "1076": {
+      "number": 1076,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
     "1083": {
       "number": 1083,
       "status": "wrong",
@@ -856,6 +1043,28 @@
       "starred": false,
       "updatedAt": "2026-10-05T08:30:19.938Z",
       "starUpdatedAt": "2026-10-05T08:30:19.938Z",
+      "totalCount": 1
+    },
+    "1125": {
+      "number": 1125,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
+    "1168": {
+      "number": 1168,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
       "totalCount": 1
     },
     "1203": {
@@ -891,6 +1100,17 @@
       "starUpdatedAt": "2026-10-05T08:25:02.130Z",
       "totalCount": 1
     },
+    "1255": {
+      "number": 1255,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
     "1265": {
       "number": 1265,
       "status": "wrong",
@@ -902,6 +1122,17 @@
       "starUpdatedAt": "2026-10-05T08:30:19.938Z",
       "totalCount": 1
     },
+    "1296": {
+      "number": 1296,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
+      "totalCount": 1
+    },
     "1350": {
       "number": 1350,
       "status": "wrong",
@@ -911,6 +1142,17 @@
       "starred": false,
       "updatedAt": "2026-10-05T08:30:19.938Z",
       "starUpdatedAt": "2026-10-05T08:30:19.938Z",
+      "totalCount": 1
+    },
+    "1354": {
+      "number": 1354,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
       "totalCount": 1
     },
     "1370": {
@@ -944,6 +1186,17 @@
       "starred": false,
       "updatedAt": "2026-10-05T08:30:19.938Z",
       "starUpdatedAt": "2026-10-05T08:30:19.938Z",
+      "totalCount": 1
+    },
+    "1418": {
+      "number": 1418,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
       "totalCount": 1
     },
     "1430": {
@@ -1021,6 +1274,17 @@
       "starred": false,
       "updatedAt": "2026-10-05T08:30:19.938Z",
       "starUpdatedAt": "2026-10-05T08:30:19.938Z",
+      "totalCount": 1
+    },
+    "1550": {
+      "number": 1550,
+      "status": "wrong",
+      "correctCount": 0,
+      "unsureCount": 0,
+      "wrongCount": 1,
+      "starred": false,
+      "updatedAt": "2026-10-05T08:38:53.026Z",
+      "starUpdatedAt": "2026-10-05T08:38:53.026Z",
       "totalCount": 1
     },
     "1575": {
@@ -1368,12 +1632,123 @@
           "status": "wrong"
         }
       ]
+    },
+    {
+      "id": "result-20261005083853026-kv5m715",
+      "createdAt": "2026-10-05T08:38:53.026Z",
+      "total": 25,
+      "correct": 0,
+      "unsure": 0,
+      "wrong": 25,
+      "accuracy": 0,
+      "entries": [
+        {
+          "number": 117,
+          "status": "wrong"
+        },
+        {
+          "number": 235,
+          "status": "wrong"
+        },
+        {
+          "number": 275,
+          "status": "wrong"
+        },
+        {
+          "number": 307,
+          "status": "wrong"
+        },
+        {
+          "number": 367,
+          "status": "wrong"
+        },
+        {
+          "number": 382,
+          "status": "wrong"
+        },
+        {
+          "number": 459,
+          "status": "wrong"
+        },
+        {
+          "number": 495,
+          "status": "wrong"
+        },
+        {
+          "number": 509,
+          "status": "wrong"
+        },
+        {
+          "number": 578,
+          "status": "wrong"
+        },
+        {
+          "number": 658,
+          "status": "wrong"
+        },
+        {
+          "number": 703,
+          "status": "wrong"
+        },
+        {
+          "number": 724,
+          "status": "wrong"
+        },
+        {
+          "number": 819,
+          "status": "wrong"
+        },
+        {
+          "number": 822,
+          "status": "wrong"
+        },
+        {
+          "number": 862,
+          "status": "wrong"
+        },
+        {
+          "number": 972,
+          "status": "wrong"
+        },
+        {
+          "number": 1076,
+          "status": "wrong"
+        },
+        {
+          "number": 1125,
+          "status": "wrong"
+        },
+        {
+          "number": 1168,
+          "status": "wrong"
+        },
+        {
+          "number": 1255,
+          "status": "wrong"
+        },
+        {
+          "number": 1296,
+          "status": "wrong"
+        },
+        {
+          "number": 1354,
+          "status": "wrong"
+        },
+        {
+          "number": 1418,
+          "status": "wrong"
+        },
+        {
+          "number": 1550,
+          "status": "wrong"
+        }
+      ]
     }
   ],
   "syncBaselineRecords": {},
   "lastResult": {
-    "id": "result-20261005083019938-2mqwz15",
-    "createdAt": "2026-10-05T08:30:19.938Z",
+    "id": "result-20261005083853026-kv5m715",
+    "createdAt": "2026-10-05T08:38:53.026Z",
     "total": 25,
     "correct": 0,
     "unsure": 0,
@@ -1381,43 +1756,37 @@
     "accuracy": 0,
     "topMistakeChapter": {
       "label": "Ch.22 動詞を中心とするイディオム",
-      "total": 4,
+      "total": 3,
       "unsure": 0,
-      "wrong": 4
+      "wrong": 3
     },
     "mistakeChapters": [
       {
         "label": "Ch.22 動詞を中心とするイディオム",
-        "total": 4,
-        "unsure": 0,
-        "wrong": 4
-      },
-      {
-        "label": "Ch.17 動詞の語法",
         "total": 3,
         "unsure": 0,
         "wrong": 3
       },
       {
-        "label": "Ch.19 代名詞の語法",
+        "label": "Ch.15 語順(倒置)・省略・強調",
         "total": 2,
         "unsure": 0,
         "wrong": 2
       },
       {
-        "label": "Ch.24 名詞を中心とするイディオム",
+        "label": "Ch.17 動詞の語法",
         "total": 2,
         "unsure": 0,
         "wrong": 2
       },
       {
-        "label": "Ch.27 会話表現",
+        "label": "Ch.21 副詞の語法",
         "total": 2,
         "unsure": 0,
         "wrong": 2
       },
       {
-        "label": "Ch.28 語彙問題",
+        "label": "Ch.23 形容詞・副詞を中心とするイディオム",
         "total": 2,
         "unsure": 0,
         "wrong": 2
@@ -1435,7 +1804,13 @@
         "wrong": 1
       },
       {
-        "label": "Ch.14 否定",
+        "label": "Ch.11 比較",
+        "total": 1,
+        "unsure": 0,
+        "wrong": 1
+      },
+      {
+        "label": "Ch.13 疑問文",
         "total": 1,
         "unsure": 0,
         "wrong": 1
@@ -1447,7 +1822,31 @@
         "wrong": 1
       },
       {
-        "label": "Ch.3 助動詞",
+        "label": "Ch.19 代名詞の語法",
+        "total": 1,
+        "unsure": 0,
+        "wrong": 1
+      },
+      {
+        "label": "Ch.24 名詞を中心とするイディオム",
+        "total": 1,
+        "unsure": 0,
+        "wrong": 1
+      },
+      {
+        "label": "Ch.25 前置詞の働きをするイディオム(群前置詞)",
+        "total": 1,
+        "unsure": 0,
+        "wrong": 1
+      },
+      {
+        "label": "Ch.27 会話表現",
+        "total": 1,
+        "unsure": 0,
+        "wrong": 1
+      },
+      {
+        "label": "Ch.28 語彙問題",
         "total": 1,
         "unsure": 0,
         "wrong": 1
@@ -1460,12 +1859,6 @@
       },
       {
         "label": "Ch.5 不定詞",
-        "total": 1,
-        "unsure": 0,
-        "wrong": 1
-      },
-      {
-        "label": "Ch.7 分詞",
         "total": 1,
         "unsure": 0,
         "wrong": 1
