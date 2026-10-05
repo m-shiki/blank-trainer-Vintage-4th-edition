@@ -2462,7 +2462,6 @@
       const STORAGE_RESULT_HISTORY_KEY = "blankTrainer.resultHistory.v1";
       const STORAGE_SYNC_BASELINE_KEY = "blankTrainer.syncBaselineRecords.v1";
       const STORAGE_GITHUB_SETTINGS_KEY = "blankTrainer.githubSettings.v1";
-      const RESULT_HISTORY_LIMIT = 500;
 
       const STATUS = {
         none: {
@@ -2596,6 +2595,7 @@
       let githubSettings = loadGithubSettings();
       let toastTimer = null;
       let recentlyTouchedNumber = null;
+      let checking = false;
 
       init();
 
@@ -2670,6 +2670,7 @@
           saveCurrentSetInfo();
           savePendingMarks();
           renderCurrentSet();
+          renderSearchResult(false);
           showToast("Set cleared");
         });
 
@@ -2714,6 +2715,7 @@
             saveLastResult();
             renderCurrentSet();
             renderLastResult();
+            renderSearchResult(false);
             showToast(selected.length + " selected");
           } catch (error) {
             showToast(error.message, true);
@@ -2770,6 +2772,19 @@
           renderWeaknessLists();
           showToast("Weakness refreshed");
         });
+        if (dom.paintRescueButton) {
+          dom.paintRescueButton.addEventListener("click", function () {
+            repaintCardsHard();
+            showToast("UI refreshed");
+          });
+        }
+
+        window.addEventListener("beforeunload", saveDraftState);
+        window.addEventListener("pagehide", saveDraftState);
+
+        // Manual Refresh UI is kept, but automatic full repaint on focus/visibility is disabled
+        // because it can make large 100-card sets feel heavy on mobile browsers.
+
       }
 
       function populateChapterSelect() {
@@ -2807,18 +2822,6 @@
         if (!chapter) return "No Chapter";
         return "Ch." + chapter.chapter.replace("章", "") + " " + chapter.name;
 
-        if (dom.paintRescueButton) {
-          dom.paintRescueButton.addEventListener("click", function () {
-            repaintCardsHard();
-            showToast("UI refreshed");
-          });
-        }
-
-        window.addEventListener("beforeunload", saveDraftState);
-        window.addEventListener("pagehide", saveDraftState);
-
-        // Manual Refresh UI is kept, but automatic full repaint on focus/visibility is disabled
-        // because it can make large 100-card sets feel heavy on mobile browsers.
 
       }
 
@@ -2930,7 +2933,7 @@
       }
 
       function saveResultHistory() {
-        resultHistory = sanitizeResultHistory(resultHistory).slice(-RESULT_HISTORY_LIMIT);
+        resultHistory = sanitizeResultHistory(resultHistory);
         localStorage.setItem(STORAGE_RESULT_HISTORY_KEY, JSON.stringify(resultHistory));
       }
 
@@ -3072,13 +3075,13 @@
           if (!event || typeof event !== "object") return;
           const id = typeof event.id === "string" && event.id.trim() ? event.id : null;
           if (!id || seen.has(id)) return;
-          const entries = Array.isArray(event.entries) ? event.entries.map(function (item) {
+          const entries = Array.isArray(event.entries) ? event.entries.filter(function (item) { return item && typeof item === "object"; }).map(function (item) {
             return {
               number: Number(item.number),
               status: typeof item.status === "string" ? item.status : "wrong"
             };
           }).filter(function (item) {
-            return isValidNumber(item.number) && item.status !== "none" && STATUS[item.status];
+            return isValidNumber(item.number) && item.status !== "none" && Object.hasOwn(STATUS, item.status);
           }) : [];
           if (!entries.length) return;
           seen.add(id);
@@ -3097,7 +3100,7 @@
         result.sort(function (a, b) {
           return String(a.createdAt || "").localeCompare(String(b.createdAt || "")) || a.id.localeCompare(b.id);
         });
-        return result.slice(-RESULT_HISTORY_LIMIT);
+        return result;
       }
 
       function cloneRecords(source) {
@@ -3122,7 +3125,7 @@
       }
 
       function sanitizeRecord(raw, number) {
-        const status = STATUS[raw.status] ? raw.status : "none";
+        const status = Object.hasOwn(STATUS, raw.status) ? raw.status : "none";
         const correctCount = toNonNegativeInt(raw.correctCount);
         const unsureCount = toNonNegativeInt(raw.unsureCount);
         const wrongCount = toNonNegativeInt(raw.wrongCount);
@@ -3285,6 +3288,7 @@
         saveLastResult();
         renderCurrentSet();
         renderLastResult();
+        renderSearchResult(false);
 
         if (selected.length < requestedCount) {
           showToast("Only " + selected.length + " matching. All selected.");
@@ -3352,7 +3356,7 @@
       }
 
       function setStatus(number, status) {
-        if (!STATUS[status] || status === "none") return;
+        if (checking || !isValidNumber(number) || !Object.hasOwn(STATUS, status) || status === "none") return;
 
         if (pendingMarks[number] === status) {
           delete pendingMarks[number];
@@ -3366,6 +3370,7 @@
       }
 
       function applyPendingMarks() {
+        if (checking) return;
         const hasCurrentSet = currentSet.length > 0;
         const markedCount = getCurrentSetMarkedCount();
         const missingCount = hasCurrentSet ? currentSet.length - markedCount : 0;
@@ -3391,7 +3396,7 @@
             };
           })
           .filter(function (item) {
-            return isValidNumber(item.number) && item.status !== "none" && STATUS[item.status];
+            return isValidNumber(item.number) && item.status !== "none" && Object.hasOwn(STATUS, item.status);
           });
 
         if (!entries.length) {
@@ -3504,6 +3509,12 @@
       }
 
       function playCompletionAnimation(entryCount) {
+        checking = true;
+        // Persist completion before the visual delay: closing the page cannot replay this set.
+        pendingMarks = {};
+        currentSet = [];
+        currentSetInfo = { mode: "Checked", createdAt: null, range: null };
+        saveDraftState();
         dom.checkButton.classList.add("check-flash");
         dom.checkButton.disabled = true;
         dom.checkButton.classList.remove("check-ready");
@@ -3518,13 +3529,8 @@
 
         const wait = cards.length ? 980 + Math.min(cards.length, 28) * 12 : 420;
         window.setTimeout(function () {
-          pendingMarks = {};
-          currentSet = [];
-          currentSetInfo = { mode: "Checked", createdAt: null, range: null };
-
-          savePendingMarks();
-          saveCurrentSet();
-          saveCurrentSetInfo();
+          checking = false;
+          dom.checkButton.classList.remove("check-flash");
           renderAll();
           showToast(entryCount + " checked");
         }, wait);
@@ -3567,7 +3573,7 @@
       function updateCheckButtonState() {
         const ready = isCurrentSetComplete();
         const hasWork = currentSet.length > 0 || getPendingCount() > 0;
-        dom.checkButton.disabled = false;
+        dom.checkButton.disabled = checking;
         dom.checkButton.classList.toggle("check-ready", ready);
         dom.checkButton.classList.toggle("check-incomplete", hasWork && !ready);
         dom.checkButton.title = ready
@@ -3593,6 +3599,7 @@
       }
 
       function toggleStar(number) {
+        if (checking || !isValidNumber(number)) return;
         const record = ensureRecord(number);
         record.starred = !record.starred;
         const now = new Date().toISOString();
@@ -3688,10 +3695,10 @@
           return;
         }
 
-        const total = lastResult.total || 0;
-        const correct = lastResult.correct || 0;
-        const unsure = lastResult.unsure || 0;
-        const wrong = lastResult.wrong || 0;
+        const total = toNonNegativeInt(lastResult.total);
+        const correct = toNonNegativeInt(lastResult.correct);
+        const unsure = toNonNegativeInt(lastResult.unsure);
+        const wrong = toNonNegativeInt(lastResult.wrong);
         const accuracy = Number.isFinite(Number(lastResult.accuracy)) ? Number(lastResult.accuracy) : 0;
         const top = lastResult.topMistakeChapter;
         const topText = top
@@ -3703,8 +3710,8 @@
         const unsureWidth = Math.round((unsure / safeTotal) * 1000) / 10;
         const wrongWidth = Math.round((wrong / safeTotal) * 1000) / 10;
 
-        const chips = (lastResult.mistakeChapters || []).slice(0, 4).map(function (item, index) {
-          return '<span class="result-chip" style="animation-delay: ' + (index * 60 + 180) + 'ms;">' + escapeHtml(item.label) + ': ' + item.total + '</span>';
+        const chips = (Array.isArray(lastResult.mistakeChapters) ? lastResult.mistakeChapters : []).filter(function (item) { return item && typeof item === "object"; }).slice(0, 4).map(function (item, index) {
+          return '<span class="result-chip" style="animation-delay: ' + (index * 60 + 180) + 'ms;">' + escapeHtml(item.label) + ': ' + toNonNegativeInt(item.total) + '</span>';
         }).join("");
 
         dom.lastResultPanel.hidden = false;
@@ -4110,7 +4117,7 @@
 
         if (response.status === 404 && allowMissing) return null;
         if (!response.ok) {
-          throw makeHttpError(response, "GitHub fetch failed");
+          throw await makeHttpError(response, "GitHub fetch failed");
         }
 
         const json = await response.json();
@@ -4438,3 +4445,4 @@
   </script>
 </body>
 </html>
+
